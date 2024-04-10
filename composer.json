@@ -1,0 +1,20 @@
+{
+    "name": "joz/blog",
+    "description": "a personal blog project in php for openclassrooms",
+    "autoload": {
+        "psr-4": {
+            "Joz\\Blog\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dumont Jonathan"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "require": {
+        "nesbot/carbon": "*"
+    }
+}
