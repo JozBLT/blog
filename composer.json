@@ -21,6 +21,7 @@
         "nesbot/carbon": "*",
         "guzzlehttp/psr7": "^2.6",
         "http-interop/response-sender": "^1.0",
-        "altorouter/altorouter": "^2.0"
+        "altorouter/altorouter": "^2.0",
+        "twig/twig": "^3.9"
     }
 }

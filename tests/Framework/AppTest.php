@@ -43,27 +43,6 @@ class AppTest extends TestCase
             $this->assertStringContainsString('<h1>Bienvenue sur l\'article article-de-test</h1>', (string)$responseSingle->getBody());
         } catch (Exception) {}
 
-//        // Créer un faux objet Renderer pour les tests
-//        $renderer = $this->createMock(\Framework\Renderer::class);
-//        // Définir le comportement du mock Renderer pour le rendu de la page index
-//        $renderer->method('render')
-//            ->with('@blog/index') // Vérifie que la méthode render est appelée avec ce paramètre
-//            ->willReturn('<h1>Bienvenue sur le blog</h1>');
-//
-//        // Créer une instance de App avec le faux Renderer
-//        $app = new App([BlogModule::class], ['renderer' => $renderer]);
-//
-//        // Créer une requête pour /blog
-//        $request = new ServerRequest('GET', '/blog');
-//
-//        // Exécuter l'application avec la requête
-//        try {
-//            $response = $app->run($request);
-//            // Tester le contenu de la réponse
-//            $this->assertStringContainsString('<h1>Bienvenue sur le blog</h1>', (string)$response->getBody());
-//            $this->assertEquals(200, $response->getStatusCode());
-//        } catch (Exception) {
-//        }
     }
 
     public function testThrowExceptionIfNoResponseSent()

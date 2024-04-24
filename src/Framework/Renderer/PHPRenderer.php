@@ -1,8 +1,8 @@
 <?php
 
-namespace Framework;
+namespace Framework\Renderer;
 
-class Renderer
+class PHPRenderer implements RendererInterface
 {
 
     const DEFAULT_NAMESPACE = '__MAIN';
@@ -14,6 +14,13 @@ class Renderer
      * @var array
      */
     private $globals = [];
+
+    public function __construct(?string $defaultPath = null)
+    {
+        if (!is_null($defaultPath)) {
+            $this->addPath($defaultPath);
+        }
+    }
 
     /**
      * Add new path to change views
@@ -50,7 +57,7 @@ class Renderer
         $renderer = $this;
         extract($this->globals);
         extract($params);
-        require ($path);
+        require($path);
         return ob_get_clean();
     }
 
@@ -80,5 +87,4 @@ class Renderer
         $namespace = $this->getNamespace($view);
         return str_replace('@' . $namespace, $this->paths[$namespace], $view);
     }
-
 }
