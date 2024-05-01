@@ -15,7 +15,7 @@ class Route
     private string $name;
 
     /**
-     * @var callable
+     * @var mixed
      */
     private $callback;
 
@@ -24,7 +24,12 @@ class Route
      */
     private array $parameters;
 
-    public function __construct(string $name, callable $callback, array $parameters)
+    /**
+     * @param string $name
+     * @param callable|string $callback
+     * @param array $parameters
+     */
+    public function __construct(string $name, callable|string $callback, array $parameters)
     {
         $this->name = $name;
         $this->callback = $callback;
@@ -41,9 +46,9 @@ class Route
 
     /**
      *
-     * @return callable
+     * @return callable|string
      */
-    public function getCallback(): callable
+    public function getCallback(): callable|string
     {
         return $this->callback;
     }

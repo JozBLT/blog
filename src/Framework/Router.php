@@ -24,11 +24,11 @@ class Router
 
     /**
      * @param string $path
-     * @param callable $callable
+     * @param callable|string $callable
      * @param string $name
      * @return void
      */
-    public function get(string $path, callable $callable, string $name): void
+    public function get(string $path, callable|string $callable, string $name): void
     {
         try {
             $this->router->map('GET', $path, $callable, $name);
