@@ -56,6 +56,33 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/deprecation-contracts" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-ctype" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/twig/twig" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dictionaries" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/altorouter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/chronos" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/core" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/database" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/datasource" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/cakephp/utility" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/http-interop" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/container" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-di" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/robmorgan/phinx" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/squizlabs" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/config" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/console" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/filesystem" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-intl-grapheme" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-intl-normalizer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/process" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/service-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/string" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/twig" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/fakerphp/faker" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

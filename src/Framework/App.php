@@ -39,6 +39,12 @@ class App
         }
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         //redirect if '/' at the end of url
@@ -69,5 +75,13 @@ class App
         } else {
             throw new \Exception('The response is not a string or an instance of ResponseInterface');
         }
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer(): ContainerInterface
+    {
+        return $this->container;
     }
 }

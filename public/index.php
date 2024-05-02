@@ -1,6 +1,6 @@
 <?php
 global $renderer;
-require './vendor/autoload.php';
+require dirname(__DIR__) . '/vendor/autoload.php';
 
 $modules = [
     \App\Blog\BlogModule::class
@@ -18,8 +18,10 @@ $container = $builder->build();
 
 $app =  new \Framework\App($container, $modules);
 
-try {
-    $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-    \Http\Response\send($response);
-} catch (Exception $e) {
+if (php_sapi_name() !== 'cli') {
+    try {
+        $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
+        \Http\Response\send($response);
+    } catch (Exception $e) {
+    }
 }
