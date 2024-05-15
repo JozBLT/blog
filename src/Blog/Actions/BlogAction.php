@@ -30,12 +30,13 @@ class BlogAction
         if ($request->getAttribute('id')) {
             return $this->show($request);
         }
-        return $this->index();
+        return $this->index($request);
     }
 
-    public function index(): string
+    public function index(Request $request): string
     {
-        $posts = $this->postRepository->findPaginated();
+        $params = $request->getQueryParams();
+        $posts = $this->postRepository->findPaginated(12, $params['p'] ?? 1);
         return $this->renderer->render('@blog/index', compact('posts'));
     }
 
@@ -43,7 +44,7 @@ class BlogAction
      * @param Request $request
      * @return ResponseInterface|string
      */
-    public function show(Request $request)
+    public function show(Request $request): string|ResponseInterface
     {
         $slug = $request->getAttribute('slug');
         $post = $this->postRepository->find($request->getAttribute('id'));

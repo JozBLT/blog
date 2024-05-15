@@ -27,6 +27,7 @@
         "altorouter/altorouter": "^2.0",
         "twig/twig": "^3.9",
         "php-di/php-di": "^7.0",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "pagerfanta/pagerfanta": "^4.5"
     }
 }
