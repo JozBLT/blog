@@ -50,4 +50,19 @@ class PostRepository
         $query->setFetchMode(\PDO::FETCH_CLASS, Post::class);
         return $query->fetch();
     }
+
+    /**
+     * @param int $id
+     * @param array $params
+     * @return bool
+     */
+    public function update(int $id, array $params): bool
+    {
+        $fieldQuery = join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
+        $params["id"] = $id;
+        $statement = $this->pdo->prepare("UPDATE posts SET $fieldQuery WHERE id = :id");
+        return $statement->execute($params);
+    }
 }

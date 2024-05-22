@@ -25,13 +25,27 @@ class Router
     /**
      * @param string $path
      * @param callable|string $callable
-     * @param string $name
+     * @param string|null $name
      * @return void
      */
-    public function get(string $path, callable|string $callable, string $name): void
+    public function get(string $path, callable|string $callable, ?string $name = null): void
     {
         try {
             $this->router->map('GET', $path, $callable, $name);
+        } catch (\Exception) {
+        }
+    }
+
+    /**
+     * @param string $path
+     * @param callable|string $callable
+     * @param string|null $name
+     * @return void
+     */
+    public function post(string $path, callable|string $callable, ?string $name = null): void
+    {
+        try {
+            $this->router->map('POST', $path, $callable, $name);
         } catch (\Exception) {
         }
     }

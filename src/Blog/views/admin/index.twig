@@ -1,0 +1,30 @@
+{% extends '@admin/layout.twig' %}
+
+{% block title "Éditer les articles" %}
+
+{% block body %}
+
+    <p class="text-right">
+{#        Reprendre à la création d'un article: timeCode 26:00#}
+    </p>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>Titre</td>
+            <td>Action</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.name }}</td>
+                <td><a href="{{ path('admin.blog.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ paginate(items, 'admin.blog.index') }}
+
+{% endblock %}
