@@ -7,7 +7,9 @@ use App\Blog\Actions\BlogAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Module;
 use Framework\Router;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class BlogModule extends Module
 {
@@ -15,18 +17,22 @@ class BlogModule extends Module
     const MIGRATIONS  = __DIR__ . '/database/migrations';
     const SEEDS  = __DIR__ . '/database/seeds';
 
+    /**
+     * @param ContainerInterface $container
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
+        $blogPrefix = $container->get('blog.prefix');
         $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/' . 'views');
         $router = $container->get(Router::class);
-        $router->get($container->get('blog.prefix'), BlogAction::class, 'blog.index');
-        $router->get($container->get('blog.prefix') . '/[*:slug]-[i:id]', BlogAction::class, 'blog.show');
+        $router->get($blogPrefix, BlogAction::class, 'blog.index');
+        $router->get("$blogPrefix/[*:slug]-[i:id]", BlogAction::class, 'blog.show');
 
-        if($container->has('admin.prefix')) {
+        if ($container->has('admin.prefix')) {
             $prefix = $container->get('admin.prefix');
-            $router->get("$prefix/posts", AdminBlogAction::class, 'admin.blog.index');
-            $router->get("$prefix/posts/[i:id]", AdminBlogAction::class, 'admin.blog.edit');
-            $router->post("$prefix/posts/[i:id]", AdminBlogAction::class, 'admin.blog.edit');
+            $router->crud("$prefix/posts", AdminBlogAction::class, 'blog.admin');
         };
     }
 }

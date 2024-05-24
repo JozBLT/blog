@@ -24,14 +24,24 @@ class AdminBlogAction
         $this->postRepository = $postRepository;
     }
 
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): string|Response
     {
+        if ($request->getMethod() === 'DELETE') {
+            return $this->delete($request);
+        }
+        if (str_ends_with((string)$request->getUri(), 'new')) {
+            return $this->create($request);
+        }
         if ($request->getAttribute('id')) {
             return $this->edit($request);
         }
         return $this->index($request);
     }
 
+    /**
+     * @param Request $request
+     * @return string
+     */
     public function index(Request $request): string
     {
         $params = $request->getQueryParams();
@@ -48,14 +58,50 @@ class AdminBlogAction
         $item = $this->postRepository->find($request->getAttribute('id'));
 
         if ($request->getMethod() === 'POST') {
-            $params = array_filter($request->getParsedBody(), function ($key) {
-                return in_array($key, ['name', 'slug', 'content']);
-            }, ARRAY_FILTER_USE_KEY);
-            var_dump($params);
+            $params = $this->getParams($request);
+            $params['updated_at'] = date('Y-m-d H:i:s');
             $this->postRepository->update($item->id, $params);
-            return $this->redirect('admin.blog.index');
+            return $this->redirect('blog.admin.index');
         }
-
         return $this->renderer->render('@blog/admin/edit', compact('item'));
+    }
+
+    /**
+     * @param Request $request
+     * @return string|Response
+     */
+    public function create(Request $request): string|Response
+    {
+        if ($request->getMethod() === 'POST') {
+            $params = $this->getParams($request);
+            $params = array_merge($params, [
+                'updated_at' => date('Y-m-d H:i:s'),
+                'created_at' => date('Y-m-d H:i:s')
+            ]);
+            $this->postRepository->insert($params);
+            return $this->redirect('blog.admin.index');
+        }
+        return $this->renderer->render('@blog/admin/create'/*  , compact('item')  */);
+    }
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function delete(Request $request): Response
+    {
+        $this->postRepository->delete($request->getAttribute('id'));
+        return $this->redirect('blog.admin.index');
+    }
+
+    /**
+     * @param Request $request
+     * @return array|object|null
+     */
+    private function getParams(Request $request): object|array|null
+    {
+        return array_filter($request->getParsedBody(), function ($key) {
+            return in_array($key, ['name', 'slug', 'content']);
+        }, ARRAY_FILTER_USE_KEY);
     }
 }

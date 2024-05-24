@@ -5,7 +5,6 @@ namespace App\Blog\Repository;
 use App\Blog\Entity\Post;
 use Framework\Database\PaginatedQuery;
 use Pagerfanta\Pagerfanta;
-use stdClass;
 
 class PostRepository
 {
@@ -58,11 +57,50 @@ class PostRepository
      */
     public function update(int $id, array $params): bool
     {
-        $fieldQuery = join(', ', array_map(function ($field) {
-            return "$field = :$field";
-        }, array_keys($params)));
+        $fieldQuery = $this->buildFieldQuery($params);
         $params["id"] = $id;
         $statement = $this->pdo->prepare("UPDATE posts SET $fieldQuery WHERE id = :id");
         return $statement->execute($params);
+    }
+
+    /**
+     * @param array $params
+     * @return bool
+     */
+    public function insert(array $params): bool
+    {
+        $fields = array_keys($params);
+        $values = array_map(function ($field) {
+            return ':' . $field;
+        }, $fields);
+        $statement = $this->pdo->prepare(
+            "INSERT INTO posts (" .
+            join(',', $fields) .
+            ") VALUES (" .
+            join(',', $values) .
+            ")"
+        );
+        return $statement->execute($params);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        $statement = $this->pdo->prepare('DELETE FROM posts WHERE id = ?');
+        return $statement->execute([$id]);
+    }
+
+    /**
+     * @param array $params
+     * @return string
+     */
+    private function buildFieldQuery(array $params): string
+    {
+        return join(', ', array_map(function ($field) {
+            return "$field = :$field";
+        }, array_keys($params)));
     }
 }

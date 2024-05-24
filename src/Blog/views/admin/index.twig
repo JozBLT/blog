@@ -5,7 +5,9 @@
 {% block body %}
 
     <p class="text-right">
-{#        Reprendre à la création d'un article: timeCode 26:00#}
+        <a href="{{ path('blog.admin.create') }}" class="btn btn-primary">
+            Ajouter un article
+        </a>
     </p>
 
     <table class="table table-striped">
@@ -19,12 +21,21 @@
         {% for item in items %}
             <tr>
                 <td>{{ item.name }}</td>
-                <td><a href="{{ path('admin.blog.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a></td>
+                <td>
+                    <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
+                    <form action="{{ path('blog.admin.delete', {id: item.id}) }}"
+                          method="POST"
+                          onsubmit="return confirm('êtes-vous sûr de vouloir supprimer cet article ?')"
+                          style="display: inline;">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button class="btn btn-danger">Supprimer</button>
+                    </form>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    {{ paginate(items, 'admin.blog.index') }}
+    {{ paginate(items, 'blog.admin.index') }}
 
 {% endblock %}
