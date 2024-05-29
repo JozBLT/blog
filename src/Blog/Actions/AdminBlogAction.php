@@ -25,7 +25,7 @@ class AdminBlogAction
         Router $router,
         PostRepository $postRepository,
         FlashService $flash
-    ){
+    ) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postRepository = $postRepository;

@@ -28,5 +28,4 @@ class FlashExtension extends AbstractExtension
     {
         return $this->flashService->get($type);
     }
-
 }

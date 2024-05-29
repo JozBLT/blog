@@ -55,5 +55,4 @@ class FlashService
         }
         return null;
     }
-
 }
