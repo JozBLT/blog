@@ -2,6 +2,7 @@
 
 namespace Framework\Actions;
 
+use Exception;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
@@ -19,6 +20,7 @@ trait RouterAwareAction
      * @param string $path
      * @param array $params
      * @return ResponseInterface
+     * @throws Exception
      */
     public function redirect(string $path, array $params = []): ResponseInterface
     {

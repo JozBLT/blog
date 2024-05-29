@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Twig;
+namespace Tests\Framework\Twig;
 
 use PHPUnit\Framework\TestCase;
 use Framework\Twig\TimeExtension;

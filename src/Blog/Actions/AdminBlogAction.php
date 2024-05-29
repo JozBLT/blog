@@ -3,9 +3,11 @@
 namespace App\Blog\Actions;
 
 use App\Blog\Repository\PostRepository;
+use Exception;
 use Framework\Actions\RouterAwareAction;
 use Framework\Router;
 use Framework\Renderer\RendererInterface;
+use Framework\Session\FlashService;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
@@ -14,14 +16,20 @@ class AdminBlogAction
     private RendererInterface $renderer;
     private PostRepository $postRepository;
     private Router $router;
+    private FlashService $flash;
 
     use RouterAwareAction;
 
-    public function __construct(RendererInterface $renderer, Router $router, PostRepository $postRepository)
-    {
+    public function __construct(
+        RendererInterface $renderer,
+        Router $router,
+        PostRepository $postRepository,
+        FlashService $flash
+    ){
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postRepository = $postRepository;
+        $this->flash = $flash;
     }
 
     public function __invoke(Request $request): string|Response
@@ -52,6 +60,7 @@ class AdminBlogAction
     /**
      * @param Request $request
      * @return Response|string
+     * @throws Exception
      */
     public function edit(Request $request): string|Response
     {
@@ -61,6 +70,7 @@ class AdminBlogAction
             $params = $this->getParams($request);
             $params['updated_at'] = date('Y-m-d H:i:s');
             $this->postRepository->update($item->id, $params);
+            $this->flash->success('L\'article a bien été modifié');
             return $this->redirect('blog.admin.index');
         }
         return $this->renderer->render('@blog/admin/edit', compact('item'));
@@ -69,6 +79,7 @@ class AdminBlogAction
     /**
      * @param Request $request
      * @return string|Response
+     * @throws Exception
      */
     public function create(Request $request): string|Response
     {
@@ -79,6 +90,7 @@ class AdminBlogAction
                 'created_at' => date('Y-m-d H:i:s')
             ]);
             $this->postRepository->insert($params);
+            $this->flash->success('L\'article a bien été créé');
             return $this->redirect('blog.admin.index');
         }
         return $this->renderer->render('@blog/admin/create'/*  , compact('item')  */);
@@ -87,6 +99,7 @@ class AdminBlogAction
     /**
      * @param Request $request
      * @return Response
+     * @throws Exception
      */
     public function delete(Request $request): Response
     {

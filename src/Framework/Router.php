@@ -3,7 +3,6 @@
 namespace Framework;
 
 use AltoRouter;
-use App\Blog\Actions\AdminBlogAction;
 use Framework\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -77,9 +76,9 @@ class Router
     {
         $this->get("$prefixPath", $callable, "$prefixName.index");
         $this->get("$prefixPath/new", $callable, "$prefixName.create");
-        $this->post("$prefixPath/new", $callable, "");
+        $this->post("$prefixPath/new", $callable);
         $this->get("$prefixPath/[i:id]", $callable, "$prefixName.edit");
-        $this->post("$prefixPath/[i:id]", $callable, "");
+        $this->post("$prefixPath/[i:id]", $callable);
         $this->delete("$prefixPath/[i:id]", $callable, "$prefixName.delete");
     }
 
@@ -91,11 +90,18 @@ class Router
     {
         $result = $this->router->match($request->getUri()->getPath());
         if ($result != null) {
-            return new Route($result['name'], $result['target'], $result['params']);
+            return new Route($result['name'] ?? '', $result['target'], $result['params']);
         }
         return null;
     }
 
+    /**
+     * @param string $name
+     * @param array $params
+     * @param array $queryParams
+     * @return string|null
+     * @throws \Exception
+     */
     public function generateUri(string $name, array $params = [], array $queryParams = []): ?string
     {
         $uri = $this->router->generate($name, $params);
