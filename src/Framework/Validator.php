@@ -54,23 +54,20 @@ class Validator
     {
         $value = $this->getValue($key);
         $length = mb_strlen($value);
-        if (
-            !is_null($min) &&
+        if (!is_null($min) &&
             !is_null($max) &&
             ($length < $min || $length > $max)
         ) {
             $this->addError($key, 'betweenLength', [$min, $max]);
             return $this;
         }
-        if (
-            !is_null($min) &&
+        if (!is_null($min) &&
             $length < $min
         ) {
             $this->addError($key, 'minLength', [$min]);
             return $this;
         }
-        if (
-            !is_null($max) &&
+        if (!is_null($max) &&
             $length > $max
         ) {
             $this->addError($key, 'maxLength', [$max]);
@@ -85,7 +82,7 @@ class Validator
     public function slug(string $key): self
     {
         $value = $this->getValue($key);
-        $pattern = '/^([a-z0-9]+-?)+$/';
+        $pattern = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
         if (!is_null($value) && !preg_match($pattern, $value)) {
             $this->addError($key, 'slug');
         }
@@ -143,5 +140,4 @@ class Validator
         }
         return null;
     }
-
 }

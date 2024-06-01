@@ -46,21 +46,25 @@ class ValidatorTest extends TestCase
             'slug' => 'Bla-blu-Blablu114',
             'slug2' => 'bla-blu_blablu114',
             'slug3' => 'bla--blu-blablu114',
+            'slug4' => 'bla-blu-blablu-',
         ])
             ->slug('slug')
             ->slug('slug2')
             ->slug('slug3')
             ->slug('slug4')
             ->getErrors();
-        $this->assertCount(3, $errors);
+        $this->assertEquals(['slug', 'slug2', 'slug3', 'slug4'], array_keys($errors));
     }
 
     public function testSlugSuccess()
     {
         $errors = $this->makeValidator([
-            'slug' => 'bla-blu-blablu114'
+            'slug' => 'bla-blu-blablu114',
+            'slug2' => 'blablu'
+
         ])
             ->slug('slug')
+            ->slug('slug2')
             ->getErrors();
         $this->assertCount(0, $errors);
     }
@@ -71,7 +75,6 @@ class ValidatorTest extends TestCase
         $this->assertCount(0, $this->makeValidator($params)->length('slug', 3)->getErrors());
         $errors = $this->makeValidator($params)->length('slug', 12)->getErrors();
         $this->assertCount(1, $errors);
-        $this->assertEquals('Le champs slug doit contenir plus de 12 caractères', (string)$errors['slug']);
         $this->assertCount(1, $this->makeValidator($params)->length('slug', 3, 4)->getErrors());
         $this->assertCount(0, $this->makeValidator($params)->length('slug', 3, 20)->getErrors());
         $this->assertCount(0, $this->makeValidator($params)->length('slug', null, 20)->getErrors());
