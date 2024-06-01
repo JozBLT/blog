@@ -15,14 +15,14 @@
         $this->formExtension = new FormExtension();
      }
 
-     private function trim(string $string)
+     private function trim(string $string): string
      {
         $lines = explode("\n", $string);
         $lines = array_map('trim', $lines);
         return implode('', $lines);
      }
 
-     private function assertSimilar(string $expected, string $actual)
+     private function assertSimilar(string $expected, string $actual): void
      {
         $this->assertEquals($this->trim($expected), $this->trim($actual));
      }
@@ -79,7 +79,7 @@
 
      public function testFieldWithErrors()
      {
-         $context = ['errors' => ['name' => 'erreur']];
+         $context = ['errors' => ['name' => 'Le champs name doit contenir entre 2 et 250 caractères.']];
          $html = $this->formExtension->field(
              $context,
              'name',
@@ -87,10 +87,12 @@
              'Titre'
          );
          $this->assertSimilar("
-            <div class=\"form-group has-danger\">
+            <div class=\"form-group\">
                 <label for=\"name\">Titre</label>
-                <input type=\"text\" class=\"form-control form-control-danger\" name=\"name\" id=\"name\" value=\"demo\">
-                <small class=\"form-text text-muted\">erreur</small>
+                <input type=\"text\" class=\"form-control is-invalid\" name=\"name\" id=\"name\" value=\"demo\">
+                <div class=\"invalid-feedback\">
+                Le champs name doit contenir entre 2 et 250 caractères.
+                </div>
             </div>
         ", $html);
      }

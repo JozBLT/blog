@@ -21,33 +21,63 @@ class FormExtension extends AbstractExtension
         ];
     }
 
+//    public function field(array $context, string $key, mixed $value, ?string $label = null, array $options = []): string
+//    {
+//        $type = $options['type'] ?? 'text';
+//        $error = $this->getErrorHTML($context, $key);
+//        $class = 'form-group';
+//        $value = $this->convertValue($value);
+//        $attributes = [
+//            'class' => trim('form-control ' . ($options['class'] ?? '')),
+//            'name' => $key,
+//            'id' => $key
+//        ];
+//        if ($error) {
+//            $class .= ' has-danger';
+//            $attributes['class'] .= ' form-control-danger';
+//        }
+//        if ($type === 'textarea') {
+//            $input = $this->textarea($value, $attributes);
+//        } else {
+//            $input = $this->input($value, $attributes);
+//        }
+//        return "
+//            <div class=\"" . $class . "\">
+//                <label for=\"name\">{$label}</label>
+//                {$input}
+//                {$error}
+//            </div>
+//            ";
+//    }
+
     public function field(array $context, string $key, mixed $value, ?string $label = null, array $options = []): string
     {
         $type = $options['type'] ?? 'text';
-        $error = $this->getErrorHTML($context, $key);
+        $error = $this->getErrorHtml($context, $key);
         $class = 'form-group';
         $value = $this->convertValue($value);
         $attributes = [
             'class' => trim('form-control ' . ($options['class'] ?? '')),
-            'name' => $key,
-            'id' => $key
+            'name'  => $key,
+            'id'    => $key
         ];
         if ($error) {
-            $class .= ' has-danger';
-            $attributes['class'] .= ' form-control-danger';
-        }
+            $attributes['class'] .= ' is-invalid';
+        } /*else {
+            $attributes['class'] .= 'is-valid';
+        }*/
         if ($type === 'textarea') {
             $input = $this->textarea($value, $attributes);
         } else {
             $input = $this->input($value, $attributes);
         }
         return "
-            <div class=\"" . $class . "\">
-                <label for=\"name\">{$label}</label>
-                {$input}
-                {$error}
-            </div>
-            ";
+        <div class=\"" . $class . "\">
+            <label for=\"name\">$label</label>
+            {$input}
+            {$error}
+        </div>
+        ";
     }
 
     private function convertValue($value): string
@@ -62,19 +92,19 @@ class FormExtension extends AbstractExtension
     {
         $error = $context['errors'][$key] ?? false;
         if ($error) {
-            return "<small class=\"form-text text-muted\">{$error}</small>";
+            return "<div class=\"invalid-feedback\">$error</div>";
         }
         return "";
     }
 
     private function input(?string $value, array $attributes): string
     {
-        return "<input type=\"text\" " . $this->getHtmlFromArray($attributes) . " value=\"{$value}\">";
+        return "<input type=\"text\" " . $this->getHtmlFromArray($attributes) . " value=\"$value\">";
     }
 
     private function textarea(?string $value, array $attributes): string
     {
-        return "<textarea " . $this->getHtmlFromArray($attributes) . ">{$value}</textarea>";
+        return "<textarea " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
     }
 
     private function getHtmlFromArray(array $attributes): string
