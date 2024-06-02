@@ -9,15 +9,15 @@ class PaginatedQuery implements AdapterInterface
     private \PDO $pdo;
     private string $query;
     private string $countQuery;
-    private string $entity;
+    private string|null $entity;
 
     /**
      * @param \PDO $pdo
      * @param string $query Query to fetch X results
      * @param string $countQuery Query to count number of results
-     * @param string $entity
+     * @param string|null $entity
      */
-    public function __construct(\PDO $pdo, string $query, string $countQuery, string $entity)
+    public function __construct(\PDO $pdo, string $query, string $countQuery, ?string $entity)
     {
 
         $this->pdo = $pdo;
@@ -37,14 +37,16 @@ class PaginatedQuery implements AdapterInterface
      * @param int $offset
      * @param int $length
      *
-     * @return array|\Traversable
+     * @return iterable
      */
-    public function getSlice(int $offset, int $length): array
+    public function getSlice(int $offset, int $length): iterable /*array|\Traversable*/
     {
         $statement = $this->pdo->prepare($this->query . ' LIMIT :offset, :length');
         $statement->bindParam('offset', $offset, \PDO::PARAM_INT);
         $statement->bindParam('length', $length, \PDO::PARAM_INT);
-        $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+        if ($this->entity) {
+            $statement->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
+        }
         $statement->execute();
         return $statement->fetchAll();
     }

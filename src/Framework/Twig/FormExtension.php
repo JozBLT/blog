@@ -21,8 +21,13 @@ class FormExtension extends AbstractExtension
         ];
     }
 
-//    public function field(array $context, string $key, mixed $value, ?string $label = null, array $options = []): string
-//    {
+//    public function field(
+//        array $context,
+//        string $key,
+//        mixed $value,
+//        ?string $label = null,
+//        array $options = []
+//    ): string {
 //        $type = $options['type'] ?? 'text';
 //        $error = $this->getErrorHTML($context, $key);
 //        $class = 'form-group';

@@ -5,7 +5,7 @@
 {% block body %}
 
     <p class="text-right">
-        <a href="{{ path('blog.admin.create') }}" class="btn btn-primary">
+        <a href="{{ path(routePrefix ~ '.create') }}" class="btn btn-primary">
             Ajouter un article
         </a>
     </p>
@@ -22,8 +22,8 @@
             <tr>
                 <td>{{ item.name }}</td>
                 <td>
-                    <a href="{{ path('blog.admin.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
-                    <form action="{{ path('blog.admin.delete', {id: item.id}) }}"
+                    <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
+                    <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}"
                           method="POST"
                           onsubmit="return confirm('êtes-vous sûr de vouloir supprimer cet article ?')"
                           style="display: inline;">
@@ -36,6 +36,6 @@
         </tbody>
     </table>
 
-    {{ paginate(items, 'blog.admin.index') }}
+    {{ paginate(items, routePrefix ~ '.index') }}
 
 {% endblock %}
