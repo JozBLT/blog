@@ -4,7 +4,7 @@ namespace Framework\Actions;
 
 use App\Blog\Entity\Post;
 use Exception;
-use App\Blog\Repository\PostRepository;
+use Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class CrudAction
 {
     private RendererInterface $renderer;
-    private mixed $repository;
+    private Repository $repository;
     private Router $router;
     private FlashService $flash;
 
@@ -36,7 +36,7 @@ class CrudAction
     public function __construct(
         RendererInterface $renderer,
         Router $router,
-        mixed $repository,
+        Repository $repository,
         FlashService $flash
     ) {
         $this->renderer = $renderer;
@@ -94,7 +94,10 @@ class CrudAction
             $params['id'] = $item->id;
             $item = $params;
         }
-        return $this->renderer->render($this->viewPath . '/edit', compact('item', 'errors'));
+        return $this->renderer->render(
+            $this->viewPath . '/edit',
+            $this->formParams(compact('item', 'errors'))
+        );
     }
 
     /**
@@ -115,7 +118,10 @@ class CrudAction
             $errors = $validator->getErrors();
             $item = $params;
         }
-        return $this->renderer->render($this->viewPath . '/create', compact('item', 'errors'));
+        return $this->renderer->render(
+            $this->viewPath . '/create',
+            $this->formParams(compact('item', 'errors'))
+        );
     }
 
     /**
@@ -134,13 +140,27 @@ class CrudAction
         }, ARRAY_FILTER_USE_KEY);
     }
 
+    /**
+     * Generate a validator for data validation
+     */
     protected function getValidator(Request $request): Validator
     {
         return new Validator($request->getParsedBody());
     }
 
+    /**
+     * Generates a new entity for the 'create' action
+     */
     protected function getNewEntity()
     {
         return [];
+    }
+
+    /**
+     * Processes parameters to send to the view
+     */
+    protected function formParams(array $params): array
+    {
+        return $params;
     }
 }

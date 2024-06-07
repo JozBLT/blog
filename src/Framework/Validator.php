@@ -105,6 +105,20 @@ class Validator
         return $this;
     }
 
+    /**
+     * Check if key exists in repository
+     */
+    public function exists(string $key, string $repository, \PDO $pdo): self
+    {
+        $value = $this->getValue($key);
+        $statement = $pdo->prepare("SELECT id FROM $repository WHERE id = ?");
+        $statement->execute([$value]);
+        if ($statement->fetchColumn() === false) {
+            $this->addError($key, 'exists', [$repository]);
+        }
+        return $this;
+    }
+
     public function isValid(): bool
     {
         return empty($this->errors);
@@ -118,19 +132,12 @@ class Validator
         return $this->errors;
     }
 
-    /**
-     * @param string $key
-     * @param string $rule
-     * @param array $attributes
-     * @return void
-     */
     private function addError(string $key, string $rule, array $attributes = []): void
     {
         $this->errors[$key] = new ValidationError($key, $rule, $attributes);
     }
 
     /**
-     * @param string $key
      * @return mixed|null
      */
     private function getValue(string $key): mixed

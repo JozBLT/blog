@@ -73,6 +73,8 @@ class FormExtension extends AbstractExtension
         }*/
         if ($type === 'textarea') {
             $input = $this->textarea($value, $attributes);
+        } elseif (array_key_exists('options', $options)) {
+            $input = $this->select($value, $options['options'], $attributes);
         } else {
             $input = $this->input($value, $attributes);
         }
@@ -102,20 +104,47 @@ class FormExtension extends AbstractExtension
         return "";
     }
 
+    /**
+     * Generates a <input>
+     */
     private function input(?string $value, array $attributes): string
     {
         return "<input type=\"text\" " . $this->getHtmlFromArray($attributes) . " value=\"$value\">";
     }
 
+    /**
+     * Generates a <textarea>
+     */
     private function textarea(?string $value, array $attributes): string
     {
         return "<textarea " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
     }
 
+    /**
+     * Generates a <select>
+     */
+    private function select(?string $value, array $options, array $attributes): string
+    {
+        $htmlOptions = array_reduce(array_keys($options), function (string $html, string $key) use ($options, $value) {
+            $params = ['value' => $key, 'selected' => $key === $value];
+            return $html . '<option ' . $this->getHtmlFromArray($params) . '>' . $options[$key] . '</option>';
+        }, "");
+        return "<select " . $this->getHtmlFromArray($attributes) . ">$htmlOptions</select>";
+    }
+
+    /**
+     * Transform a key/value array in html attribute
+     */
     private function getHtmlFromArray(array $attributes): string
     {
-        return implode(' ', array_map(function ($key, $value) {
-            return "$key=\"$value\"";
-        }, array_keys($attributes), $attributes));
+        $htmlParts = [];
+        foreach ($attributes as $key => $value) {
+            if ($value === true) {
+                $htmlParts[] = (string)$key;
+            } elseif ($value !== false) {
+                $htmlParts[] = "$key=\"$value\"";
+            }
+        }
+        return implode(' ', $htmlParts);
     }
 }

@@ -32,7 +32,7 @@ class Repository
         $query =  new PaginatedQuery(
             $this->pdo,
             $this->paginationQuery(),
-            'SELECT COUNT(id) FROM posts',
+            "SELECT COUNT(id) FROM {$this->repository}",
             $this->entity
         );
         return (new Pagerfanta($query))
@@ -46,6 +46,21 @@ class Repository
     }
 
     /**
+     * Find a key/value list of elements
+     */
+    public function findList(): array
+    {
+        $results = $this->pdo
+            ->query("SELECT id, name FROM {$this->repository}")
+            ->fetchAll(\PDO::FETCH_NUM);
+        $list = [];
+        foreach ($results as $result) {
+            $list[$result[0]] = $result[1];
+        }
+        return $list;
+    }
+
+    /**
      * Find an element with his id
      */
     public function find(int $id): mixed
@@ -55,7 +70,7 @@ class Repository
         if ($this->entity) {
             $query->setFetchMode(\PDO::FETCH_CLASS, $this->entity);
         }
-        return $query->fetch();
+        return $query->fetch() ?: null;
     }
 
     public function update(int $id, array $params): bool
@@ -90,9 +105,9 @@ class Repository
         }, array_keys($params)));
     }
 
-    public function getPdo(): \PDO
+    public function getEntity(): string
     {
-        return $this->pdo;
+        return $this->entity;
     }
 
     public function getRepository(): string
@@ -100,8 +115,18 @@ class Repository
         return $this->repository;
     }
 
-    public function getEntity(): string
+    /**
+     * Check if an element exists
+     */
+    public function exists($id): bool
     {
-        return $this->entity;
+        $statement = $this->pdo->prepare("SELECT id FROM {$this->repository} WHERE id = ?");
+        $statement->execute([$id]);
+        return $statement->fetchColumn() !== false;
+    }
+
+    public function getPdo(): \PDO
+    {
+        return $this->pdo;
     }
 }

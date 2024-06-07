@@ -13,6 +13,9 @@ class PostRepository extends Repository
 
     protected function paginationQuery(): string
     {
-        return parent::paginationQuery() . " ORDER BY created_at DESC";
+        return "SELECT posts.id, posts.name, categories.name category_name
+        FROM {$this->repository}
+        LEFT JOIN categories ON posts.category_id = categories.id
+        ORDER BY created_at DESC";
     }
 }

@@ -48,6 +48,11 @@ return
             'pass' => '',
             'port' => '3306',
             'charset' => 'utf8',
+        ],
+        'test' => [
+            'adapter' => 'sqlite',
+            'memory' => true,
+            'name' => 'test'
         ]
     ],
     'version_order' => 'creation'
