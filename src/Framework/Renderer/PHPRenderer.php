@@ -7,13 +7,12 @@ class PHPRenderer implements RendererInterface
 
     const DEFAULT_NAMESPACE = '__MAIN';
 
-    private $paths = [];
+    private array $paths = [];
 
     /**
      * Variables globally accessible for all views
-     * @var array
      */
-    private $globals = [];
+    private array $globals = [];
 
     public function __construct(?string $defaultPath = null)
     {
@@ -24,9 +23,6 @@ class PHPRenderer implements RendererInterface
 
     /**
      * Add new path to change views
-     * @param string $namespace
-     * @param string|null $path
-     * @return void
      */
     public function addPath(string $namespace, ?string $path = null): void
     {
@@ -42,9 +38,6 @@ class PHPRenderer implements RendererInterface
      * Path can be specified with namespaces added with addPath()
      * $this->render('@blog/views');
      * $this->render('view');
-     * @param string $view
-     * @param array $params
-     * @return string
      */
     public function render(string $view, array $params = []): string
     {
@@ -63,9 +56,6 @@ class PHPRenderer implements RendererInterface
 
     /**
      * Add global variables on every views
-     * @param string $key
-     * @param mixed $value
-     * @return void
      */
     public function addGlobal(string $key, mixed $value): void
     {

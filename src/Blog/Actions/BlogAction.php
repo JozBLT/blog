@@ -3,6 +3,7 @@
 namespace App\Blog\Actions;
 
 use App\Blog\Repository\PostRepository;
+use Exception;
 use Framework\Actions\RouterAwareAction;
 use Framework\Router;
 use Framework\Renderer\RendererInterface;
@@ -24,7 +25,10 @@ class BlogAction
         $this->postRepository = $postRepository;
     }
 
-    public function __invoke(Request $request)
+    /**
+     * @throws Exception
+     */
+    public function __invoke(Request $request): string|ResponseInterface
     {
         if ($request->getAttribute('id')) {
             return $this->show($request);
@@ -40,8 +44,7 @@ class BlogAction
     }
 
     /**
-     * @param Request $request
-     * @return ResponseInterface|string
+     * @throws Exception
      */
     public function show(Request $request): string|ResponseInterface
     {
