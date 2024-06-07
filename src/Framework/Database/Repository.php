@@ -105,6 +105,9 @@ class Repository
         }, array_keys($params)));
     }
 
+    /**
+     * @return mixed
+     */
     public function getEntity(): string
     {
         return $this->entity;

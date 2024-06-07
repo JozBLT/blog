@@ -14,19 +14,16 @@ class App
 
     /**
      * List of modules
-     * @var array
      */
     private array $modules = [];
 
     /**
      * Container
-     * @var ContainerInterface
      */
     private ContainerInterface $container;
 
     /**
      * App constructor
-     * @param ContainerInterface $container
      * @param string[] $modules Liste des modules à charger
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -40,8 +37,6 @@ class App
     }
 
     /**
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -83,9 +78,6 @@ class App
         }
     }
 
-    /**
-     * @return ContainerInterface
-     */
     public function getContainer(): ContainerInterface
     {
         return $this->container;

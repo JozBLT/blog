@@ -15,11 +15,10 @@ use Psr\Container\NotFoundExceptionInterface;
 class BlogModule extends Module
 {
     const DEFINITIONS = __DIR__ . '/config.php';
-    const MIGRATIONS  = __DIR__ . '/database/migrations';
-    const SEEDS  = __DIR__ . '/database/seeds';
+    const MIGRATIONS  = __DIR__ . '/Database/migrations';
+    const SEEDS  = __DIR__ . '/Database/seeds';
 
     /**
-     * @param ContainerInterface $container
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
@@ -28,7 +27,7 @@ class BlogModule extends Module
         $blogPrefix = $container->get('blog.prefix');
         $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/' . 'views');
         $router = $container->get(Router::class);
-        $router->get($blogPrefix, BlogAction::class, 'blog.index');
+        $router->get($container->get('blog.prefix'), BlogAction::class, 'blog.index');
         $router->get("$blogPrefix/[*:slug]-[i:id]", BlogAction::class, 'blog.show');
 
         if ($container->has('admin.prefix')) {

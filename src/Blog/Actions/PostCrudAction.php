@@ -44,7 +44,7 @@ class PostCrudAction extends CrudAction
         return $post;
     }
 
-    protected function getParams(Request $request): object|array|null
+    protected function getParams(Request $request): array
     {
         $params = array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'slug', 'content', 'created_at', 'category_id']);

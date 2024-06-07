@@ -12,11 +12,6 @@ class PHPSession implements SessionInterface
         }
     }
 
-    /**
-     * @param string $key
-     * @param $default
-     * @return mixed
-     */
     public function get(string $key, $default = null): mixed
     {
         $this->ensureStarted();
@@ -26,21 +21,12 @@ class PHPSession implements SessionInterface
         return $default;
     }
 
-    /**
-     * @param string $key
-     * @param $value
-     * @return void
-     */
     public function set(string $key, $value): void
     {
         $this->ensureStarted();
         $_SESSION[$key] = $value;
     }
 
-    /**
-     * @param string $key
-     * @return void
-     */
     public function delete(string $key): void
     {
         $this->ensureStarted();

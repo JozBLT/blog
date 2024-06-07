@@ -133,7 +133,7 @@ class CrudAction
         return $this->redirect($this->routePrefix . '.index');
     }
 
-    protected function getParams(Request $request): object|array|null
+    protected function getParams(Request $request): array
     {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, []);

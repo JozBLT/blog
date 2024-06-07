@@ -3,6 +3,7 @@
 namespace Framework;
 
 use AltoRouter;
+use Exception;
 use Framework\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -22,55 +23,32 @@ class Router
         $this->router = new AltoRouter();
     }
 
-    /**
-     * @param string $path
-     * @param callable|string $callable
-     * @param string|null $name
-     * @return void
-     */
     public function get(string $path, callable|string $callable, ?string $name = null): void
     {
         try {
             $this->router->map('GET', $path, $callable, $name);
-        } catch (\Exception) {
+        } catch (Exception) {
         }
     }
 
-    /**
-     * @param string $path
-     * @param callable|string $callable
-     * @param string|null $name
-     * @return void
-     */
     public function post(string $path, callable|string $callable, ?string $name = null): void
     {
         try {
             $this->router->map('POST', $path, $callable, $name);
-        } catch (\Exception) {
+        } catch (Exception) {
         }
     }
 
-    /**
-     * @param string $path
-     * @param callable|string $callable
-     * @param string|null $name
-     * @return void
-     */
     public function delete(string $path, callable|string $callable, ?string $name = null): void
     {
         try {
             $this->router->map('DELETE', $path, $callable, $name);
-        } catch (\Exception) {
+        } catch (Exception) {
         }
     }
 
     /**
      * Generate CRUD routes
-     *
-     * @param string $prefixPath
-     * @param $callable
-     * @param string $prefixName
-     * @return void
      */
     public function crud(string $prefixPath, $callable, string $prefixName): void
     {
@@ -82,10 +60,6 @@ class Router
         $this->delete("$prefixPath/[i:id]", $callable, "$prefixName.delete");
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return Route|null
-     */
     public function match(ServerRequestInterface $request): ?Route
     {
         $result = $this->router->match($request->getUri()->getPath());
@@ -96,11 +70,7 @@ class Router
     }
 
     /**
-     * @param string $name
-     * @param array $params
-     * @param array $queryParams
-     * @return string|null
-     * @throws \Exception
+     * @throws Exception
      */
     public function generateUri(string $name, array $params = [], array $queryParams = []): ?string
     {

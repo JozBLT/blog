@@ -16,10 +16,6 @@ trait RouterAwareAction
 
     /**
      * Returns a response of redirection
-     *
-     * @param string $path
-     * @param array $params
-     * @return ResponseInterface
      * @throws Exception
      */
     public function redirect(string $path, array $params = []): ResponseInterface

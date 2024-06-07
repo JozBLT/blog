@@ -4,12 +4,10 @@ namespace Framework\Session;
 
 class FlashService
 {
-    /**
-     * @var SessionInterface
-     */
+
     private SessionInterface $session;
 
-    private $sessionKey = 'flash';
+    private string $sessionKey = 'flash';
 
     private $messages;
 
@@ -18,32 +16,20 @@ class FlashService
         $this->session = $session;
     }
 
-    /**
-     * @param string $message
-     * @return void
-     */
-    public function success(string $message)
+    public function success(string $message): void
     {
         $flash = $this->session->get($this->sessionKey, []);
         $flash['success'] = $message;
         $this->session->set($this->sessionKey, $flash);
     }
 
-    /**
-     * @param string $message
-     * @return void
-     */
-    public function error(string $message)
+    public function error(string $message): void
     {
         $flash = $this->session->get($this->sessionKey, []);
         $flash['error'] = $message;
         $this->session->set($this->sessionKey, $flash);
     }
 
-    /**
-     * @param string $type
-     * @return string|null
-     */
     public function get(string $type): ?string
     {
         if (is_null($this->messages)) {

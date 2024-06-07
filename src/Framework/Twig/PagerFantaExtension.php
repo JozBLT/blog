@@ -28,12 +28,6 @@ class PagerFantaExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * @param Pagerfanta $paginatedResults
-     * @param string $route
-     * @param array $queryArgs
-     * @return string
-     */
     public function paginate(Pagerfanta $paginatedResults, string $route, array $queryArgs = []): string
     {
         $view = new TwitterBootstrap4View();

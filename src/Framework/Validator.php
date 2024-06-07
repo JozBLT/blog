@@ -14,10 +14,6 @@ class Validator
         $this->params = $params;
     }
 
-    /**
-     * @param string ...$keys
-     * @return Validator
-     */
     public function required(string ...$keys): self
     {
         foreach ($keys as $key) {
@@ -29,10 +25,6 @@ class Validator
         return $this;
     }
 
-    /**
-     * @param string ...$keys
-     * @return Validator
-     */
     public function notEmpty(string ...$keys): self
     {
         foreach ($keys as $key) {
@@ -44,12 +36,6 @@ class Validator
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param int|null $min
-     * @param int|null $max
-     * @return Validator
-     */
     public function length(string $key, ?int $min, ?int $max = null): self
     {
         $value = $this->getValue($key);
@@ -75,10 +61,6 @@ class Validator
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @return Validator
-     */
     public function slug(string $key): self
     {
         $value = $this->getValue($key);
@@ -89,11 +71,6 @@ class Validator
         return $this;
     }
 
-    /**
-     * @param string $key
-     * @param string $format
-     * @return Validator
-     */
     public function dateTime(string $key, string $format = "Y-m-d H:i:s"): self
     {
         $value = $this->getValue($key);
