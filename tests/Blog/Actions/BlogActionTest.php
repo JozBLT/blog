@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Blog\Actions;
+namespace Tests\Blog\Actions;
 
 use App\Blog\Actions\BlogAction;
 use App\Blog\Entity\Post;

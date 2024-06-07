@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Framework\Blog\Repository;
+namespace Tests\Blog\Repository;
 
 use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
