@@ -2,7 +2,7 @@
 
 namespace Tests\Blog\Actions;
 
-use App\Blog\Actions\BlogAction;
+use App\Blog\Actions\PostShowAction;
 use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
 use Framework\Renderer\RendererInterface;
@@ -10,25 +10,34 @@ use Framework\Router;
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
+use Prophecy\Prophecy\ObjectProphecy;
 
-class BlogActionTest extends TestCase
+class PostShowActionTest extends TestCase
 {
     use ProphecyTrait;
 
-    private RendererInterface $renderer;
-    private Router $router;
-    private PostRepository $postRepository;
-    private BlogAction $action;
+    private ObjectProphecy $rendererProphecy;
+
+    private ObjectProphecy $postRepositoryProphecy;
+
+    private ObjectProphecy $routerProphecy;
+
+    private PostShowAction $action;
 
     public function setUp(): void
     {
-        $this->renderer = $this->prophesize(RendererInterface::class)->reveal();
-        $this->router = $this->prophesize(Router::class)->reveal();
-        $this->postRepository = $this->prophesize(PostRepository::class)->reveal();
-        $this->action = new BlogAction(
-            $this->renderer,
-            $this->router,
-            $this->postRepository,
+        $this->rendererProphecy = $this->prophesize(RendererInterface::class);
+        $this->postRepositoryProphecy = $this->prophesize(PostRepository::class);
+        $this->routerProphecy = $this->prophesize(Router::class);
+
+        $renderer = $this->rendererProphecy->reveal();
+        $postRepository = $this->postRepositoryProphecy->reveal();
+        $router = $this->routerProphecy->reveal();
+
+        $this->action = new PostShowAction(
+            $renderer,
+            $router,
+            $postRepository
         );
     }
 
@@ -48,15 +57,15 @@ class BlogActionTest extends TestCase
             ->withAttribute('id', $post->id)
             ->withAttribute('slug', 'demo');
 
-        $this->router->generateUri(
+        $this->routerProphecy->generateUri(
             'blog.show',
             ['id' => $post->id, 'slug' => $post->slug]
         )->willReturn('/demo2');
-        $this->postRepository->find($post->id)->willReturn($post);
+        $this->postRepositoryProphecy->findWithCategory($post->id)->willReturn($post);
 
         $response = call_user_func_array($this->action, [$request]);
         $this->assertEquals(301, $response->getStatusCode());
-        $this->assertEquals(['/demo2'], $response->getHeader('location'));
+        $this->assertEquals(['/demo2'], $response->getHeader('Location'));
     }
 
     public function testShowRender()
@@ -65,8 +74,8 @@ class BlogActionTest extends TestCase
         $request = (new ServerRequest('GET', '/'))
             ->withAttribute('id', $post->id)
             ->withAttribute('slug', $post->slug);
-        $this->postRepository->find($post->id)->willReturn($post);
-        $this->renderer->render('@blog/show', ['post' => $post])->willReturn('');
+        $this->postRepositoryProphecy->findWithCategory($post->id)->willReturn($post);
+        $this->rendererProphecy->render('@blog/show', ['post' => $post])->willReturn('');
         $response = call_user_func_array($this->action, [$request]);
         $this->assertTrue(true);
     }
