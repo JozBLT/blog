@@ -40,6 +40,7 @@ class Validator
     {
         $value = $this->getValue($key);
         $length = mb_strlen($value);
+
         if (!is_null($min) &&
             !is_null($max) &&
             ($length < $min || $length > $max)
@@ -58,6 +59,7 @@ class Validator
         ) {
             $this->addError($key, 'maxLength', [$max]);
         }
+
         return $this;
     }
 
@@ -65,9 +67,11 @@ class Validator
     {
         $value = $this->getValue($key);
         $pattern = '/^[a-z0-9]+(-[a-z0-9]+)*$/';
+
         if (!is_null($value) && !preg_match($pattern, $value)) {
             $this->addError($key, 'slug');
         }
+
         return $this;
     }
 
@@ -76,23 +80,47 @@ class Validator
         $value = $this->getValue($key);
         $date = \DateTime::createFromFormat($format, $value);
         $errors = \DateTime::getLastErrors();
+
         if ($errors['error_count'] > 0 || $errors['warning_count'] > 0 || $date === false) {
             $this->addError($key, 'datetime', [$format]);
         }
+
         return $this;
     }
 
-    /**
-     * Check if key exists in repository
-     */
+    /** Check if key exists in repository */
     public function exists(string $key, string $repository, \PDO $pdo): self
     {
         $value = $this->getValue($key);
         $statement = $pdo->prepare("SELECT id FROM $repository WHERE id = ?");
         $statement->execute([$value]);
+
         if ($statement->fetchColumn() === false) {
             $this->addError($key, 'exists', [$repository]);
         }
+
+        return $this;
+    }
+
+    /** Check if key is unique */
+    public function unique(string $key, string $repository, \PDO $pdo, ?int $exclude = null): self
+    {
+        $value = $this->getValue($key);
+        $query = "SELECT id FROM $repository WHERE $key = ?";
+        $params = [$value];
+
+        if ($exclude !== null) {
+            $query .= " AND id != ?";
+            $params[] = $exclude;
+        }
+
+        $statement = $pdo->prepare($query);
+        $statement->execute($params);
+
+        if ($statement->fetchColumn() !== false) {
+            $this->addError($key, 'unique', [$value]);
+        }
+
         return $this;
     }
 
@@ -101,9 +129,7 @@ class Validator
         return empty($this->errors);
     }
 
-    /**
-     * @return ValidationError[]
-     */
+    /** @return ValidationError[] */
     public function getErrors(): array
     {
         return $this->errors;
@@ -114,14 +140,13 @@ class Validator
         $this->errors[$key] = new ValidationError($key, $rule, $attributes);
     }
 
-    /**
-     * @return mixed|null
-     */
+    /** @return mixed|null */
     private function getValue(string $key): mixed
     {
         if (array_key_exists($key, $this->params)) {
             return $this->params[$key];
         }
+
         return null;
     }
 }

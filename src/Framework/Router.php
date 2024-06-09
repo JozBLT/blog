@@ -13,9 +13,6 @@ use Psr\Http\Message\ServerRequestInterface;
 class Router
 {
 
-    /**
-     * @var AltoRouter
-     */
     private AltoRouter $router;
 
     public function __construct()
@@ -63,9 +60,11 @@ class Router
     public function match(ServerRequestInterface $request): ?Route
     {
         $result = $this->router->match($request->getUri()->getPath());
+
         if ($result != null) {
             return new Route($result['name'] ?? '', $result['target'], $result['params']);
         }
+
         return null;
     }
 
@@ -75,9 +74,11 @@ class Router
     public function generateUri(string $name, array $params = [], array $queryParams = []): ?string
     {
         $uri = $this->router->generate($name, $params);
+
         if (!empty($queryParams)) {
             return $uri . '?' . http_build_query($queryParams);
         }
+
         return $uri;
     }
 }

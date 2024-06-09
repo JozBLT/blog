@@ -15,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class CrudAction
 {
     private RendererInterface $renderer;
-    private Repository $repository;
+    protected Repository $repository;
     private Router $router;
     private FlashService $flash;
 
@@ -151,7 +151,7 @@ class CrudAction
     /**
      * Generates a new entity for the 'create' action
      */
-    protected function getNewEntity()
+    protected function getNewEntity(): array
     {
         return [];
     }

@@ -4,6 +4,7 @@ namespace Tests\Blog\Repository;
 
 use App\Blog\Entity\Post;
 use App\Blog\Repository\PostRepository;
+use Framework\Database\NoRecordException;
 use Tests\DatabaseTestCase;
 
 class PostRepositoryTest extends DatabaseTestCase
@@ -18,6 +19,7 @@ class PostRepositoryTest extends DatabaseTestCase
         $this->postRepository = new PostRepository($pdo);
     }
 
+    /** @throws NoRecordException */
     public function testFind()
     {
         $this->seedDatabase($this->postRepository->getPdo());
@@ -27,10 +29,11 @@ class PostRepositoryTest extends DatabaseTestCase
 
     public function testFindRecordNotFound()
     {
-        $post = $this->postRepository->find(1);
-        $this->assertNull($post);
+        $this->expectException(NoRecordException::class);
+        $this->postRepository->find(1);
     }
 
+    /** @throws NoRecordException */
     public function testUpdate()
     {
         $this->seedDatabase($this->postRepository->getPdo());
@@ -40,6 +43,7 @@ class PostRepositoryTest extends DatabaseTestCase
         $this->assertEquals('demo', $post->slug);
     }
 
+    /** @throws NoRecordException */
     public function testInsert()
     {
         $this->postRepository->insert(['name' => 'Salut', 'slug' => 'demo']);

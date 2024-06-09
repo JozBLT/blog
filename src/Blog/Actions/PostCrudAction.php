@@ -37,11 +37,13 @@ class PostCrudAction extends CrudAction
         return $params;
     }
 
-    protected function getNewEntity(): Post
+    /** @return Post[] */
+    protected function getNewEntity(): array
     {
         $post = new Post();
         $post->created_at = new \DateTime();
-        return $post;
+
+        return [$post];
     }
 
     protected function getParams(Request $request): array
