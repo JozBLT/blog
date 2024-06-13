@@ -23,6 +23,7 @@ class TwigRenderer implements RendererInterface
 
     /**
      * Add new path to change views
+     *
      * @throws LoaderError
      */
     public function addPath(string $namespace, ?string $path = null): void
@@ -35,6 +36,7 @@ class TwigRenderer implements RendererInterface
      * Path can be specified with namespaces added with addPath()
      * $this->render('@blog/views');
      * $this->render('view');
+     *
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
@@ -44,11 +46,14 @@ class TwigRenderer implements RendererInterface
         return $this->twig->render($view . '.twig', $params);
     }
 
-    /**
-     * Add global variables on every views
-     */
+    /** Add global variables on every views */
     public function addGlobal(string $key, mixed $value): void
     {
         $this->twig->addGlobal($key, $value);
+    }
+
+    public function getTwig(): Environment
+    {
+        return $this->twig;
     }
 }

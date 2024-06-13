@@ -90,6 +90,12 @@ class Repository
         return $this->fetchOrFail("SELECT * FROM {$this->repository} WHERE id = ?", [$id]);
     }
 
+    /** Get the number of records */
+    public function count(): int
+    {
+        return $this->fetchColumn("SELECT COUNT(id) FROM {$this->repository}");
+    }
+
     /** Update a record in DB */
     public function update(int $id, array $params): bool
     {
@@ -174,5 +180,18 @@ class Repository
         }
 
         return $record;
+    }
+
+    /** Fetch first column */
+    private function fetchColumn(string $query, array $params = []): mixed
+    {
+        $query = $this->pdo->prepare($query);
+        $query->execute($params);
+
+        if ($this->entity) {
+            $query->setFetchMode(PDO::FETCH_CLASS, $this->entity);
+        }
+
+        return $query->fetchColumn();
     }
 }

@@ -78,4 +78,13 @@ class RepositoryTest extends TestCase
         $this->assertFalse($this->repository->exists(99548));
     }
 
+    /** @throws NoRecordException */
+    public function testCount()
+    {
+        $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a1")');
+        $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a2")');
+        $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a1")');
+        $this->assertEquals(3, $this->repository->count());
+    }
+
 }
