@@ -28,6 +28,7 @@
         "twig/twig": "^3.9",
         "php-di/php-di": "^7.0",
         "ext-pdo": "*",
-        "pagerfanta/pagerfanta": "^4.5"
+        "pagerfanta/pagerfanta": "^4.5",
+        "franzl/whoops-middleware": "^2.0"
     }
 }
