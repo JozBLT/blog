@@ -7,9 +7,7 @@ use Exception;
 use Framework\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Register and match routes
- */
+/** Register and match routes */
 class Router
 {
 
@@ -44,9 +42,7 @@ class Router
         }
     }
 
-    /**
-     * Generate CRUD routes
-     */
+    /** Generate CRUD routes */
     public function crud(string $prefixPath, $callable, string $prefixName): void
     {
         $this->get("$prefixPath", $callable, "$prefixName.index");
@@ -68,9 +64,7 @@ class Router
         return null;
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function generateUri(string $name, array $params = [], array $queryParams = []): ?string
     {
         $uri = $this->router->generate($name, $params);

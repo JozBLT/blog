@@ -21,40 +21,6 @@ class FormExtension extends AbstractExtension
         ];
     }
 
-//    public function field(
-//        array $context,
-//        string $key,
-//        mixed $value,
-//        ?string $label = null,
-//        array $options = []
-//    ): string {
-//        $type = $options['type'] ?? 'text';
-//        $error = $this->getErrorHTML($context, $key);
-//        $class = 'form-group';
-//        $value = $this->convertValue($value);
-//        $attributes = [
-//            'class' => trim('form-control ' . ($options['class'] ?? '')),
-//            'name' => $key,
-//            'id' => $key
-//        ];
-//        if ($error) {
-//            $class .= ' has-danger';
-//            $attributes['class'] .= ' form-control-danger';
-//        }
-//        if ($type === 'textarea') {
-//            $input = $this->textarea($value, $attributes);
-//        } else {
-//            $input = $this->input($value, $attributes);
-//        }
-//        return "
-//            <div class=\"" . $class . "\">
-//                <label for=\"name\">{$label}</label>
-//                {$input}
-//                {$error}
-//            </div>
-//            ";
-//    }
-
     public function field(array $context, string $key, mixed $value, ?string $label = null, array $options = []): string
     {
         $type = $options['type'] ?? 'text';

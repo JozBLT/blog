@@ -47,6 +47,8 @@ class App implements RequestHandlerInterface
     }
 
     /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      * @throws Exception
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
@@ -76,7 +78,7 @@ class App implements RequestHandlerInterface
     }
 
     /** @throws Exception */
-    private function getContainer(): ContainerInterface
+    public function getContainer(): ContainerInterface
     {
         $builder = new ContainerBuilder();
         $builder->addDefinitions($this->definition);
@@ -91,6 +93,10 @@ class App implements RequestHandlerInterface
         return $this->container;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     private function getMiddleware(): ?object
     {
         if (array_key_exists($this->index, $this->middlewares)) {

@@ -1,5 +1,6 @@
 <?php
 
+use Framework\Middleware\CsrfMiddleware;
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
 use Framework\Renderer\RendererInterface;
@@ -7,12 +8,7 @@ use Framework\Renderer\TwigRendererFactory;
 use Framework\Session\PHPSession;
 use Framework\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
-use Framework\Twig\{
-    FlashExtension,
-    FormExtension,
-    PagerFantaExtension,
-    TextExtension,
-    TimeExtension};
+use Framework\Twig\{CsrfExtension, FlashExtension, FormExtension, PagerFantaExtension, TextExtension, TimeExtension};
 
 use function DI\{get, autowire, factory};
 
@@ -28,9 +24,12 @@ return [
       get(TextExtension::class),
       get(TimeExtension::class),
       get(FlashExtension::class),
-      get(FormExtension::class)
+      get(FormExtension::class),
+      get(CsrfExtension::class)
     ],
     SessionInterface::class => autowire(PHPSession::class),
+    CsrfMiddleware::class => autowire()
+        ->constructorParameter('session', get(sessionInterface::class)),
     Router::class => autowire(),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
