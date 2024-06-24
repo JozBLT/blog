@@ -19,6 +19,7 @@ class App implements RequestHandlerInterface
     private array $modules = [];
     private string $definition;
     private ContainerInterface $container;
+
     /**
      * @var string[]
      */
@@ -57,11 +58,12 @@ class App implements RequestHandlerInterface
 
         if (is_null($middleware)) {
             throw new Exception('No middleware intercepted this request');
-        } elseif (is_callable($middleware)) {
+        } /*elseif (is_callable($middleware)) {
             return call_user_func_array($middleware, [$request, [$this, 'handle']]);
         } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
-        }
+        }*/
+        return $middleware->process($request, $this);
     }
 
     /**

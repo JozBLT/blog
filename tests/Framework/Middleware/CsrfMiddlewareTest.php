@@ -1,6 +1,6 @@
 <?php
 
-namespace Framework\Middleware;
+namespace Tests\Framework\Middleware;
 
 use Exception;
 use Framework\Exception\CsrfInvalidException;

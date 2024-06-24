@@ -24,11 +24,11 @@ class BlogModule extends Module
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface
      */
-    public function __construct(private readonly ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
         $blogPrefix = $container->get('blog.prefix');
-        $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/' . 'views');
-        $router = $this->getRouter();
+        $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/views');
+        $router = $container->get(Router::class);
         $router->get($container->get('blog.prefix'), PostIndexAction::class, 'blog.index');
         $router->get("$blogPrefix/[*:slug]-[i:id]", PostShowAction::class, 'blog.show');
         $router->get("$blogPrefix/category/[*:slug]", CategoryShowAction::class, 'blog.category');
@@ -37,11 +37,6 @@ class BlogModule extends Module
             $prefix = $container->get('admin.prefix');
             $router->crud("$prefix/posts", PostCrudAction::class, 'blog.admin');
             $router->crud("$prefix/categories", CategoryCrudAction::class, 'blog.category.admin');
-        };
-    }
-
-    private function getRouter(): Router
-    {
-        return $this->container->get(Router::class);
+        }
     }
 }

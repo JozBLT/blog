@@ -11,16 +11,20 @@ use Framework\Middleware\RouterMiddleware;
 use Framework\Middleware\TrailingSlashMiddleware;
 use Franzl\Middleware\Whoops\WhoopsMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
+use function Http\Response\send;
 
-global $renderer;
-require dirname(__DIR__) . '/vendor/autoload.php';
+global $renderer; // useless?
+
+chdir(dirname(__DIR__));
+
+require 'vendor/autoload.php';
 
 $modules = [
     AdminModule::class,
     BlogModule::class
 ];
 
-$app =  (new App(dirname(__DIR__) . '/config/config.php'))
+$app =  (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)
     ->pipe(WhoopsMiddleware::class)
@@ -31,7 +35,7 @@ $app =  (new App(dirname(__DIR__) . '/config/config.php'))
     ->pipe(DispatcherMiddleware::class)
     ->pipe(NotFoundMiddleware::class);
 
-if (php_sapi_name() !== 'cli') {
+if (php_sapi_name() !== "cli") {
     $response = $app->run(ServerRequest::fromGlobals());
-    \Http\Response\send($response);
+    send($response);
 }

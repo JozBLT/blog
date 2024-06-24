@@ -10,9 +10,10 @@ use Framework\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
 use Framework\Twig\{CsrfExtension, FlashExtension, FormExtension, PagerFantaExtension, TextExtension, TimeExtension};
 
-use function DI\{get, autowire, factory};
+use function DI\{get, autowire, factory, env};
 
 return [
+    'env' => env('ENV', 'production'),
     'database.host' => 'localhost',
     'database.username' => 'root',
     'database.password' => '',
@@ -28,8 +29,7 @@ return [
       get(CsrfExtension::class)
     ],
     SessionInterface::class => autowire(PHPSession::class),
-    CsrfMiddleware::class => autowire()
-        ->constructorParameter('session', get(sessionInterface::class)),
+    CsrfMiddleware::class => autowire()->constructor(get(sessionInterface::class)),
     Router::class => autowire(),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
