@@ -2,12 +2,15 @@
 
 namespace Framework\Database;
 
+use Exception;
+
 class Query
 {
 
     private $select;
     private $from;
     private $where = [];
+    private $entity;
     private $group;
     private $order;
     private int $limit;
@@ -56,6 +59,21 @@ class Query
         $this->params = $params;
 
         return $this;
+    }
+
+    public function into(string $entity): self
+    {
+        $this->entity = $entity;
+
+        return $this;
+    }
+
+    public function all(): QueryResult
+    {
+        return new QueryResult(
+            $this->execute()->fetchAll(\PDO::FETCH_ASSOC),
+            $this->entity
+        );
     }
 
     public function __toString()
