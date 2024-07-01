@@ -51,7 +51,7 @@ class RepositoryTest extends TestCase
     {
         $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a1")');
         $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a2")');
-        $categories = $this->repository->findAll();
+        $categories = $this->repository->findAll()->fetchAll();
         $this->assertCount(2, $categories);
         $this->assertInstanceOf(stdClass::class, $categories[0]);
         $this->assertEquals('a1', $categories[0]->name);
@@ -78,7 +78,6 @@ class RepositoryTest extends TestCase
         $this->assertFalse($this->repository->exists(99548));
     }
 
-    /** @throws NoRecordException */
     public function testCount()
     {
         $this->repository->getPdo()->exec('INSERT INTO test (name) VALUES ("a1")');

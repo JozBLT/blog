@@ -47,4 +47,9 @@ class Post
         ['fileName' => $fileName, 'extension' => $extension] = pathinfo($this->image);
         return '/uploads/posts/' . $fileName . '_thumb.' . $extension;
     }
+
+    public function imageUrl()
+    {
+        return '/uploads/posts/' . $this->image;
+    }
 }

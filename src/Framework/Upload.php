@@ -10,7 +10,7 @@ class Upload
 
     protected string $path;
 
-    protected $formats;
+    protected $formats = [];
 
     public function __construct(?string $path = null)
     {
@@ -19,20 +19,24 @@ class Upload
         }
     }
 
-    public function upload(UploadedFileInterface $file, ?string $oldFile = null): string
+    public function upload(UploadedFileInterface $file, ?string $oldFile = null): ?string
     {
-        $this->delete($oldFile);
-        $targetPath = $this->addCopySuffix($this->path . DIRECTORY_SEPARATOR . $file->getClientFilename());
-        $dirname = pathinfo($targetPath, PATHINFO_DIRNAME);
+        if ($file->getError() === UPLOAD_ERR_OK) {
+            $this->delete($oldFile);
+            $targetPath = $this->addCopySuffix($this->path . DIRECTORY_SEPARATOR . $file->getClientFilename());
+            $dirname = pathinfo($targetPath, PATHINFO_DIRNAME);
 
-        if (!file_exists($dirname)) {
-            mkdir($dirname, 777, true);
+            if (!file_exists($dirname)) {
+                mkdir($dirname, 777, true);
+            }
+
+            $file->moveTo($targetPath);
+            $this->generateFormats($targetPath);
+
+            return pathinfo($targetPath)['basename'];
         }
 
-        $file->moveTo($targetPath);
-        $this->generateFormats($targetPath);
-
-        return pathinfo($targetPath)['basename'];
+        return null;
     }
 
     private function addCopySuffix(string $targetPath): string

@@ -5,9 +5,13 @@ namespace Framework\Database;
 class Hydrator
 {
 
-    public static function hydrate(array $array, $object)
+    public static function hydrate(array $array, $object): mixed
     {
-        $instance = new $object();
+        if (is_string($object)) {
+            $instance = new $object();
+        } else {
+            $instance = $object;
+        }
 
         foreach ($array as $key => $value) {
             $method = self::getSetter($key);

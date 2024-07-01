@@ -4,6 +4,7 @@ namespace Framework\Actions;
 
 use App\Blog\Entity\Post;
 use Exception;
+use Framework\Database\Hydrator;
 use Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -50,6 +51,7 @@ class CrudAction
     {
         $this->renderer->addGlobal('viewPath', $this->viewPath);
         $this->renderer->addGlobal('routePrefix', $this->routePrefix);
+
         if ($request->getMethod() === 'DELETE') {
             return $this->delete($request);
         }
@@ -67,7 +69,7 @@ class CrudAction
     public function index(Request $request): string
     {
         $params = $request->getQueryParams();
-        $items = $this->repository->findPaginated(12, $params['p'] ?? 1);
+        $items = $this->repository->findAll()->paginate(12, $params['p'] ?? 1);
 
         return $this->renderer->render($this->viewPath . '/index', compact('items'));
     }
@@ -80,15 +82,15 @@ class CrudAction
 
         if ($request->getMethod() === 'POST') {
             $validator = $this->getValidator($request);
+
             if ($validator->isValid()) {
                 $this->repository->update($item->id, $this->getParams($request, $item));
                 $this->flash->success($this->messages['edit']);
                 return $this->redirect($this->routePrefix . '.index');
             }
+
             $errors = $validator->getErrors();
-            $params = $request->getParsedBody();
-            $params['id'] = $item->id;
-            $item = $params;
+            Hydrator::hydrate($request->getParsedBody(), $item);
         }
 
         return $this->renderer->render(
@@ -102,14 +104,16 @@ class CrudAction
     {
         $errors = '';
         $item = $this->getNewEntity();
+
         if ($request->getMethod() === 'POST') {
             $validator = $this->getValidator($request);
+
             if ($validator->isValid()) {
                 $this->repository->insert($this->getParams($request, $item));
                 $this->flash->success($this->messages['create']);
                 return $this->redirect($this->routePrefix . '.index');
             }
-            $item = $request->getParsedBody();
+            Hydrator::hydrate($request->getParsedBody(), $item);
             $errors = $validator->getErrors();
         }
 
