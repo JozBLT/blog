@@ -29,6 +29,7 @@
         "php-di/php-di": "^7.0",
         "ext-pdo": "*",
         "pagerfanta/pagerfanta": "^4.5",
-        "franzl/whoops-middleware": "^2.0"
+        "franzl/whoops-middleware": "^2.0",
+        "intervention/image": "^3.7"
     }
 }

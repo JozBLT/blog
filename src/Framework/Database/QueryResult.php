@@ -2,13 +2,15 @@
 
 namespace Framework\Database;
 
+use Exception;
+
 class QueryResult implements \ArrayAccess, \Iterator
 {
 
     private array $records;
     private ?string $entity;
     private int $index = 0;
-    private $hydratedRecords = [];
+    private array $hydratedRecords = [];
 
     public function __construct(array $records, ?string $entity = null)
     {

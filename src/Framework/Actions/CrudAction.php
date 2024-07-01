@@ -45,9 +45,7 @@ class CrudAction
         $this->flash = $flash;
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function __invoke(Request $request): string|Response
     {
         $this->renderer->addGlobal('viewPath', $this->viewPath);
@@ -61,104 +59,95 @@ class CrudAction
         if ($request->getAttribute('id')) {
             return $this->edit($request);
         }
+
         return $this->index($request);
     }
 
-    /**
-     * Display elements list
-     */
+    /** Display elements list */
     public function index(Request $request): string
     {
         $params = $request->getQueryParams();
         $items = $this->repository->findPaginated(12, $params['p'] ?? 1);
+
         return $this->renderer->render($this->viewPath . '/index', compact('items'));
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function edit(Request $request): string|Response
     {
         $errors = '';
         $item = $this->repository->find($request->getAttribute('id'));
 
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
-                $this->repository->update($item->id, $params);
+                $this->repository->update($item->id, $this->getParams($request, $item));
                 $this->flash->success($this->messages['edit']);
                 return $this->redirect($this->routePrefix . '.index');
             }
             $errors = $validator->getErrors();
+            $params = $request->getParsedBody();
             $params['id'] = $item->id;
             $item = $params;
         }
+
         return $this->renderer->render(
             $this->viewPath . '/edit',
             $this->formParams(compact('item', 'errors'))
         );
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function create(Request $request): string|Response
     {
         $errors = '';
         $item = $this->getNewEntity();
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
             if ($validator->isValid()) {
-                $this->repository->insert($params);
+                $this->repository->insert($this->getParams($request, $item));
                 $this->flash->success($this->messages['create']);
                 return $this->redirect($this->routePrefix . '.index');
             }
+            $item = $request->getParsedBody();
             $errors = $validator->getErrors();
-            $item = $params;
         }
+
         return $this->renderer->render(
             $this->viewPath . '/create',
             $this->formParams(compact('item', 'errors'))
         );
     }
 
-    /**
-     * @throws Exception
-     */
+    /** @throws Exception */
     public function delete(Request $request): Response
     {
         $this->repository->delete($request->getAttribute('id'));
+
         return $this->redirect($this->routePrefix . '.index');
     }
 
-    protected function getParams(Request $request): array
+    /** Filters the parameters received by the request */
+    protected function getParams(Request $request, $post): array
     {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, []);
         }, ARRAY_FILTER_USE_KEY);
     }
 
-    /**
-     * Generate a validator for data validation
-     */
+    /** Generates a validator for data validation */
     protected function getValidator(Request $request): Validator
     {
-        return new Validator($request->getParsedBody());
+        return new Validator(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
     }
 
-    /**
-     * Generates a new entity for the 'create' action
-     */
+    /** Generates a new entity for the 'create' action */
     protected function getNewEntity(): array
     {
         return [];
     }
 
-    /**
-     * Processes parameters to send to the view
-     */
+    /** Processes parameters to send to the view */
     protected function formParams(array $params): array
     {
         return $params;

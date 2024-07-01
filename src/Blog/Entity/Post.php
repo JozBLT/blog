@@ -20,6 +20,8 @@ class Post
 
     public $updatedAt;
 
+    public $image;
+
     /**
      * @throws Exception
      */
@@ -38,5 +40,11 @@ class Post
         if (is_string($datetime)) {
             $this->updatedAt = new DateTime($datetime);
         }
+    }
+
+    public function getThumb(): string
+    {
+        ['fileName' => $fileName, 'extension' => $extension] = pathinfo($this->image);
+        return '/uploads/posts/' . $fileName . '_thumb.' . $extension;
     }
 }
