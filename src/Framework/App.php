@@ -58,11 +58,12 @@ class App implements RequestHandlerInterface
 
         if (is_null($middleware)) {
             throw new Exception('No middleware intercepted this request');
-        } /*elseif (is_callable($middleware)) {
+        } elseif (is_callable($middleware)) {
             return call_user_func_array($middleware, [$request, [$this, 'handle']]);
         } elseif ($middleware instanceof MiddlewareInterface) {
             return $middleware->process($request, $this);
-        }*/
+        }
+
         return $middleware->process($request, $this);
     }
 
@@ -76,6 +77,7 @@ class App implements RequestHandlerInterface
         foreach ($this->modules as $module) {
             $this->getContainer()->get($module);
         }
+
         return $this->handle($request);
     }
 
@@ -90,6 +92,7 @@ class App implements RequestHandlerInterface
                 $builder->addDefinitions($module::DEFINITIONS);
             }
         }
+
         $this->container = $builder->build();
 
         return $this->container;
@@ -106,6 +109,7 @@ class App implements RequestHandlerInterface
             $this->index++;
             return $middleware;
         }
+
         return null;
     }
 }

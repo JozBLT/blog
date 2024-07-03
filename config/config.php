@@ -29,7 +29,8 @@ return [
       get(CsrfExtension::class)
     ],
     SessionInterface::class => autowire(PHPSession::class),
-    CsrfMiddleware::class => autowire()->constructor(get(sessionInterface::class)),
+    CsrfMiddleware::class => autowire()
+        ->constructorParameter('session', get(sessionInterface::class)),
     Router::class => autowire(),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {

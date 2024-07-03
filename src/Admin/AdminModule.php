@@ -8,7 +8,7 @@
 
 class AdminModule extends Module
 {
-    const DEFINITIONS = __DIR__ . '/' . 'config.php';
+    const DEFINITIONS = __DIR__ . '/config.php';
 
     public function __construct(
         RendererInterface $renderer,
@@ -16,7 +16,7 @@ class AdminModule extends Module
         AdminTwigExtension $adminTwigExtension,
         string $prefix
     ) {
-        $renderer->addPath('admin', __DIR__ . '/' . 'views');
+        $renderer->addPath('admin', __DIR__ . '/views');
         $router->get($prefix, DashboardAction::class, 'admin');
         if ($renderer instanceof TwigRenderer) {
             $renderer->getTwig()->addExtension($adminTwigExtension);
