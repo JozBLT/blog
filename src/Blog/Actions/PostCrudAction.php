@@ -17,9 +17,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PostCrudAction extends CrudAction
 {
-    protected ?string $viewPath = "@blog/admin/posts";
+    protected string $viewPath = "@blog/admin/posts";
 
-    protected ?string $routePrefix = "blog.admin";
+    protected string $routePrefix = "blog.admin";
 
     private CategoryRepository $categoryRepository;
     private PostUpload $postUpload;

@@ -12,9 +12,9 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 class CategoryCrudAction extends CrudAction
 {
-    protected ?string $viewPath = "@blog/admin/categories";
+    protected string $viewPath = "@blog/admin/categories";
 
-    protected ?string $routePrefix = "blog.category.admin";
+    protected string $routePrefix = "blog.category.admin";
 
     public function __construct(
         RendererInterface $renderer,
@@ -25,7 +25,7 @@ class CategoryCrudAction extends CrudAction
         parent::__construct($renderer, $router, $repository, $flash);
     }
 
-    protected function getParams(Request $request): array
+    protected function getParams(Request $request, $post): array
     {
         return array_filter($request->getParsedBody(), function ($key) {
             return in_array($key, ['name', 'slug']);
