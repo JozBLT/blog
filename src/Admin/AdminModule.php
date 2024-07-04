@@ -1,10 +1,11 @@
 <?php
- namespace App\Admin;
 
- use Framework\Module;
- use Framework\Renderer\RendererInterface;
- use Framework\Renderer\TwigRenderer;
- use Framework\Router;
+namespace App\Admin;
+
+use Framework\Module;
+use Framework\Renderer\RendererInterface;
+use Framework\Renderer\TwigRenderer;
+use Framework\Router;
 
 class AdminModule extends Module
 {

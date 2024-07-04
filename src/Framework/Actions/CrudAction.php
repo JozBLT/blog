@@ -2,7 +2,6 @@
 
 namespace Framework\Actions;
 
-use App\Blog\Entity\Post;
 use Exception;
 use Framework\Database\Hydrator;
 use Framework\Database\Repository;
@@ -20,9 +19,9 @@ class CrudAction
     private Router $router;
     private FlashService $flash;
 
-    protected ?string $viewPath;
+    protected string $viewPath;
 
-    protected ?string $routePrefix;
+    protected string $routePrefix;
 
     /**
      * @var string[]
@@ -134,7 +133,7 @@ class CrudAction
     /** Filters the parameters received by the request */
     protected function getParams(Request $request, $post): array
     {
-        return array_filter($request->getParsedBody(), function ($key) {
+        return array_filter(array_merge($request->getParsedBody(), $request->getUploadedFiles()), function ($key) {
             return in_array($key, []);
         }, ARRAY_FILTER_USE_KEY);
     }
