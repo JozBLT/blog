@@ -15,10 +15,13 @@
     <body>
 
         <nav class="navbar navbar-fixed-top navbar-dark bg-inverse">
-            <a class="navbar-brand" href="{#{{ path('blog.index') }}#}">Joz Blog</a>
+            <a class="navbar-brand" href="#">Joz Blog</a>
             <ul class="nav navbar-nav">
-                <li class="nav-item active">
+                <li class="nav-item {#{{ is_subpath('blog.index') ? 'active' }}#}">
                     <a class="nav-link" href="{#{{ path('blog.index') }}#}">Home</a>
+                </li>
+                <li class="nav-item {#{{ is_subpath('contact') ? 'active' }}#}">
+                    <a class="nav-link" href="{#{{ path('contact') }}#}">Contact</a>
                 </li>
             </ul>
             <div class="nav navbar-nav">

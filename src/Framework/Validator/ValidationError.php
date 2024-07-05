@@ -22,7 +22,8 @@ class ValidationError
         'exists' => 'Le champs %s n\'existe pas dans la table %s',
         'unique' => 'Le champs %s existe déjà en base de données',
         'fileType' => 'Le champs %s n\'est pas au format valide (%s)',
-        'uploaded' => 'Vous devez uploader un fichier'
+        'uploaded' => 'Vous devez uploader un fichier',
+        'email' => 'Cet email n\'est pas valide'
     ];
     private array $attributes;
 

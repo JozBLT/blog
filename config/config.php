@@ -1,5 +1,6 @@
 <?php
 
+use Framework\MailerFactory;
 use Framework\Middleware\CsrfMiddleware;
 use Framework\Router;
 use Framework\Router\RouterTwigExtension;
@@ -10,6 +11,7 @@ use Framework\Session\SessionInterface;
 use Psr\Container\ContainerInterface;
 use Framework\Twig\{CsrfExtension, FlashExtension, FormExtension, PagerFantaExtension, TextExtension, TimeExtension};
 
+use Symfony\Component\Mailer\Mailer;
 use function DI\{get, autowire, factory, env};
 
 return [
@@ -43,5 +45,8 @@ return [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
             ]
         );
-    }
+    },
+    //Mailer
+    'mail.to' => 'admin@admin.fr',
+    Mailer::class => \DI\factory(MailerFactory::class)
 ];

@@ -3,6 +3,7 @@
 namespace Tests\Framework;
 
 use Framework\Validator;
+use GuzzleHttp\Psr7\UploadedFile;
 use Tests\DatabaseTestCase;
 
 class ValidatorTest extends DatabaseTestCase
@@ -115,6 +116,40 @@ class ValidatorTest extends DatabaseTestCase
         $this->assertTrue($this->makeValidator(['name' => 'a1111'])->unique('name', 'test', $pdo)->isValid());
         $this->assertTrue($this->makeValidator(['name' => 'a1'])->unique('name', 'test', $pdo, 1)->isValid());
         $this->assertFalse($this->makeValidator(['name' => 'a2'])->unique('name', 'test', $pdo, 1)->isValid());
+    }
+
+    public function testUploadedFile()
+    {
+        $file = $this->getMockBuilder(UploadedFile::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getError'])
+            ->getMock();
+        $file->expects($this->once())->method('getError')->willReturn(UPLOAD_ERR_OK);
+        $file2 = $this->getMockBuilder(UploadedFile::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getError'])
+            ->getMock();
+        $file2->expects($this->once())->method('getError')->willReturn(UPLOAD_ERR_CANT_WRITE);
+        $this->assertTrue($this->makeValidator(['image' => $file])->uploaded('image')->isValid());
+        $this->assertFalse($this->makeValidator(['image' => $file2])->uploaded('image')->isValid());
+    }
+
+    public function testExtension()
+    {
+        $file = $this->getMockBuilder(UploadedFile::class)->disableOriginalConstructor()->getMock();
+        $file->expects($this->any())->method('getError')->willReturn(UPLOAD_ERR_OK);
+        $file->expects($this->any())->method('getClientFileName')->willReturn('demo.jpg');
+        $file->expects($this->any())
+            ->method('getClientMediaType')
+            ->willReturn('image/jpeg', 'fake/php');
+        $this->assertTrue($this->makeValidator(['image' => $file])->extension('image', ['jpg'])->isValid());
+        $this->assertFalse($this->makeValidator(['image' => $file])->extension('image', ['jpg'])->isValid());
+    }
+
+    public function testEmail()
+    {
+        $this->assertTrue($this->makeValidator(['email' => 'demo@local.dev'])->email('email')->isValid());
+        $this->assertFalse($this->makeValidator(['email' => 'azeeaz'])->email('email')->isValid());
     }
 
     private function makeValidator(array $params): Validator

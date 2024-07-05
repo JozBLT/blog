@@ -4,6 +4,7 @@ use App\Admin\AdminModule;
 use App\Auth\AuthModule;
 use App\Auth\ForbiddenMiddleware;
 use App\Blog\BlogModule;
+use App\Contact\ContactModule;
 use Framework\App;
 use Framework\Auth\LoggedInMiddleware;
 use Framework\Middleware\CsrfMiddleware;
@@ -25,7 +26,8 @@ require 'vendor/autoload.php';
 $app =  (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(BlogModule::class)
-    ->addModule(AuthModule::class);
+    ->addModule(AuthModule::class)
+    ->addModule(ContactModule::class);
 
 $container = $app->getContainer();
 $app->pipe(WhoopsMiddleware::class)
