@@ -18,16 +18,14 @@ class App implements RequestHandlerInterface
 
     /** List of modules */
     private array $modules = [];
-    private string $definition;
+    private string|array|null $definition;
     private ContainerInterface $container;
 
-    /**
-     * @var string[]
-     */
-    private array $middlewares;
+    /** @var string[] */
+    private array $middlewares = [];
     private int $index = 0;
 
-    public function __construct(string $definition)
+    public function __construct($definition = null)
     {
         $this->definition = $definition;
     }
@@ -41,7 +39,10 @@ class App implements RequestHandlerInterface
     }
 
     /** Add a middleware */
-    public function pipe(string $routePrefix, ?string $middleware = null): self
+    public function pipe(
+        string|callable|MiddlewareInterface $routePrefix,
+        string|callable|MiddlewareInterface|null $middleware = null
+    ): self
     {
         if ($middleware === null) {
             $this->middlewares[] = $routePrefix;
@@ -90,7 +91,10 @@ class App implements RequestHandlerInterface
     public function getContainer(): ContainerInterface
     {
         $builder = new ContainerBuilder();
-        $builder->addDefinitions($this->definition);
+
+        if ($this->definition) {
+            $builder->addDefinitions($this->definition);
+        }
 
         foreach ($this->modules as $module) {
             if ($module::DEFINITIONS) {

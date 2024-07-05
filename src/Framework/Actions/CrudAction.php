@@ -15,8 +15,11 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 class CrudAction
 {
     private RendererInterface $renderer;
+
     protected Repository $repository;
+
     private Router $router;
+
     private FlashService $flash;
 
     protected string $viewPath;
@@ -30,6 +33,8 @@ class CrudAction
         'create' => "L'élément a bien été créé",
         'edit' => "L'élément a bien été modifié"
     ];
+
+    protected array $acceptedParams = [];
 
     use RouterAwareAction;
 
@@ -134,7 +139,7 @@ class CrudAction
     protected function getParams(Request $request, $post): array
     {
         return array_filter(array_merge($request->getParsedBody(), $request->getUploadedFiles()), function ($key) {
-            return in_array($key, []);
+            return in_array($key, $this->acceptedParams);
         }, ARRAY_FILTER_USE_KEY);
     }
 
@@ -145,9 +150,9 @@ class CrudAction
     }
 
     /** Generates a new entity for the 'create' action */
-    protected function getNewEntity(): array
+    protected function getNewEntity(): mixed
     {
-        return [];
+        return new \stdClass();
     }
 
     /** Processes parameters to send to the view */
