@@ -22,7 +22,7 @@ class PHPRenderer implements RendererInterface
     }
 
     /**
-     * Add new path to change views
+     * Add new path to load views
      */
     public function addPath(string $namespace, ?string $path = null): void
     {

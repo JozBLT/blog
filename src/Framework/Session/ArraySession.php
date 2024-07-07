@@ -12,6 +12,7 @@ class ArraySession implements SessionInterface
         if (array_key_exists($key, $this->session)) {
             return $this->session[$key];
         }
+
         return $default;
     }
 

@@ -2,34 +2,61 @@
 
 namespace Framework\Actions;
 
-use App\Blog\Entity\Post;
 use Exception;
+use Framework\Database\Hydrator;
 use Framework\Database\Repository;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
 use Framework\Validator;
-use Psr\Http\Message\ResponseInterface as Response;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class CrudAction
 {
-    private RendererInterface $renderer;
-    protected Repository $repository;
-    private Router $router;
-    private FlashService $flash;
-
-    protected ?string $viewPath;
-
-    protected ?string $routePrefix;
 
     /**
-     * @var string[]
+     * @var RendererInterface
      */
-    protected array $messages = [
+    private $renderer;
+
+    /**
+     * @var Router
+     */
+    private $router;
+
+    /**
+     * @var Repository
+     */
+    protected $repository;
+
+    /**
+     * @var FlashService
+     */
+    private $flash;
+
+    /**
+     * @var string
+     */
+    protected $viewPath;
+
+    /**
+     * @var string
+     */
+    protected $routePrefix;
+
+    /**
+     * @var string
+     */
+    protected $messages = [
         'create' => "L'élément a bien été créé",
-        'edit' => "L'élément a bien été modifié"
+        'edit'   => "L'élément a bien été modifié"
     ];
+
+    /**
+     * @var array
+     */
+    protected $acceptedParams = [];
 
     use RouterAwareAction;
 
@@ -45,120 +72,113 @@ class CrudAction
         $this->flash = $flash;
     }
 
-    /**
-     * @throws Exception
-     */
-    public function __invoke(Request $request): string|Response
+    /** @throws Exception */
+    public function __invoke(ServerRequestInterface $request)
     {
         $this->renderer->addGlobal('viewPath', $this->viewPath);
         $this->renderer->addGlobal('routePrefix', $this->routePrefix);
+
         if ($request->getMethod() === 'DELETE') {
             return $this->delete($request);
         }
-        if (str_ends_with((string)$request->getUri(), 'new')) {
+        if (substr((string)$request->getUri(), -3) === 'new') {
             return $this->create($request);
         }
         if ($request->getAttribute('id')) {
             return $this->edit($request);
         }
+
         return $this->index($request);
     }
 
-    /**
-     * Display elements list
-     */
-    public function index(Request $request): string
+    /** Display elements list */
+    public function index(ServerRequestInterface $request): string
     {
         $params = $request->getQueryParams();
-        $items = $this->repository->findPaginated(12, $params['p'] ?? 1);
+        $items = $this->repository->findAll()->paginate(12, $params['p'] ?? 1);
+
         return $this->renderer->render($this->viewPath . '/index', compact('items'));
     }
 
-    /**
-     * @throws Exception
-     */
-    public function edit(Request $request): string|Response
+    /** @throws Exception */
+    public function edit(ServerRequestInterface $request): string|ResponseInterface
     {
         $errors = '';
         $item = $this->repository->find($request->getAttribute('id'));
 
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
+
             if ($validator->isValid()) {
-                $this->repository->update($item->id, $params);
+                $this->repository->update($item->id, $this->getParams($request, $item));
                 $this->flash->success($this->messages['edit']);
+
                 return $this->redirect($this->routePrefix . '.index');
             }
+
             $errors = $validator->getErrors();
-            $params['id'] = $item->id;
-            $item = $params;
+            Hydrator::hydrate($request->getParsedBody(), $item);
         }
+
         return $this->renderer->render(
             $this->viewPath . '/edit',
             $this->formParams(compact('item', 'errors'))
         );
     }
 
-    /**
-     * @throws Exception
-     */
-    public function create(Request $request): string|Response
+    /** @throws Exception */
+    public function create(ServerRequestInterface $request): string|ResponseInterface
     {
         $errors = '';
         $item = $this->getNewEntity();
+
         if ($request->getMethod() === 'POST') {
-            $params = $this->getParams($request);
             $validator = $this->getValidator($request);
+
             if ($validator->isValid()) {
-                $this->repository->insert($params);
+                $this->repository->insert($this->getParams($request, $item));
                 $this->flash->success($this->messages['create']);
                 return $this->redirect($this->routePrefix . '.index');
             }
+            Hydrator::hydrate($request->getParsedBody(), $item);
             $errors = $validator->getErrors();
-            $item = $params;
         }
+
         return $this->renderer->render(
             $this->viewPath . '/create',
             $this->formParams(compact('item', 'errors'))
         );
     }
 
-    /**
-     * @throws Exception
-     */
-    public function delete(Request $request): Response
+    /** @throws Exception */
+    public function delete(ServerRequestInterface $request): ResponseInterface
     {
         $this->repository->delete($request->getAttribute('id'));
+
         return $this->redirect($this->routePrefix . '.index');
     }
 
-    protected function getParams(Request $request): array
+    /** Filters the parameters received by the request */
+    protected function getParams(ServerRequestInterface $request, $post): array
     {
-        return array_filter($request->getParsedBody(), function ($key) {
-            return in_array($key, []);
+        return array_filter(array_merge($request->getParsedBody(), $request->getUploadedFiles()), function ($key) {
+            return in_array($key, $this->acceptedParams);
         }, ARRAY_FILTER_USE_KEY);
     }
 
-    /**
-     * Generate a validator for data validation
-     */
-    protected function getValidator(Request $request): Validator
+    /** Generates a validator for data validation */
+    protected function getValidator(ServerRequestInterface $request)
     {
-        return new Validator($request->getParsedBody());
+        return new Validator(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
     }
 
-    /**
-     * Generates a new entity for the 'create' action
-     */
-    protected function getNewEntity(): array
+    /** Generates a new entity for the 'create' action */
+    protected function getNewEntity()
     {
-        return [];
+        return new \stdClass();
     }
 
-    /**
-     * Processes parameters to send to the view
-     */
+    /** Processes parameters to send to the view */
     protected function formParams(array $params): array
     {
         return $params;

@@ -8,11 +8,13 @@ use Twig\TwigFunction;
 class AdminTwigExtension extends AbstractExtension
 {
 
-    private array $widgets;
+    /**
+     * @var array
+     */
+    private $widgets;
 
     public function __construct(array $widgets)
     {
-
         $this->widgets = $widgets;
     }
 

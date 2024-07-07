@@ -24,10 +24,14 @@
         "nesbot/carbon": "*",
         "guzzlehttp/psr7": "^2.6",
         "http-interop/response-sender": "^1.0",
-        "altorouter/altorouter": "^2.0",
         "twig/twig": "^3.9",
         "php-di/php-di": "^7.0",
         "ext-pdo": "*",
-        "pagerfanta/pagerfanta": "^4.5"
+        "pagerfanta/pagerfanta": "^4.5",
+        "franzl/whoops-middleware": "^2.0",
+        "intervention/image": "^3.7",
+        "mezzio/mezzio-fastroute": "^3.11",
+        "symfony/mailer": "^7.1",
+        "symfony/twig-bridge": "^7.1"
     }
 }

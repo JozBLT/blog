@@ -2,84 +2,138 @@
 
 namespace Framework;
 
-use GuzzleHttp\Psr7\Response;
+use DI\ContainerBuilder;
+use Exception;
+use Framework\Middleware\RoutePrefixedMiddleware;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class App
+class App implements RequestHandlerInterface
 {
 
     /**
      * List of modules
+     * @var array
      */
-    private array $modules = [];
+    private $modules = [];
+    /**
+     * @var string|array|null
+     */
+    private $definition;
 
     /**
-     * Container
+     * @var ContainerInterface
      */
-    private ContainerInterface $container;
+    private $container;
 
     /**
-     * App constructor
-     * @param string[] $modules Liste des modules à charger
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @var string[]
      */
-    public function __construct(ContainerInterface $container, array $modules)
+    private $middlewares = [];
+
+    /**
+     * @var int
+     */
+    private $index = 0;
+
+    public function __construct($definition = null)
     {
-        $this->container = $container;
-        foreach ($modules as $module) {
-            $this->modules[] = $container->get($module);
-        }
+        $this->definition = $definition;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     */
+    /** Add a module to the app */
+    public function addModule(string $module): self
+    {
+        $this->modules[] = $module;
+
+        return $this;
+    }
+
+    /** Add a middleware */
+    public function pipe(
+        string|callable|MiddlewareInterface $routePrefix,
+        string|callable|MiddlewareInterface|null $middleware = null
+    ): self
+    {
+        if ($middleware === null) {
+            $this->middlewares[] = $routePrefix;
+        } else {
+            $this->middlewares[] = new RoutePrefixedMiddleware($this->getContainer(), $routePrefix, $middleware);
+        }
+
+        return $this;
+    }
+
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $middleware = $this->getMiddleware();
+
+        if (is_null($middleware)) {
+            throw new Exception('Aucun middleware n\'a intercepté cette requête');
+        } elseif (is_callable($middleware)) {
+            return call_user_func_array($middleware, [$request, [$this, 'handle']]);
+        } elseif ($middleware instanceof MiddlewareInterface) {
+            return $middleware->process($request, $this);
+        }
+
+        return $middleware->process($request, $this);
+    }
+
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        //redirect if '/' at the end of url
-        $uri = $request->getUri()->getPath();
-        $parsedBody = $request->getParsedBody();
-        if (array_key_exists('_method', $parsedBody) &&
-            in_array($parsedBody['_method'], ['DELETE', 'PUT'])
-        ) {
-            $request = $request->withMethod($parsedBody['_method']);
+        foreach ($this->modules as $module) {
+            $this->getContainer()->get($module);
         }
-        if (!empty($uri) && $uri[-1] === "/") {
-            return (new Response())
-                ->withStatus(301)
-                ->withHeader('Location', substr($uri, 0, -1));
-        }
-        $router = $this->container->get(Router::class);
-        $route = $router->match($request);
-        if (is_null($route)) {
-            return new Response(404, [], '<h1>Erreur 404</h1>');
-        }
-        $params = $route->getParams();
-        $request = array_reduce(array_keys($params), function ($request, $key) use ($params) {
-            return $request->withAttribute($key, $params[$key]);
-        }, $request);
-        $callback = $route->getCallback();
-        if (is_string($callback)) {
-            $callback = $this->container->get($callback);
-        }
-        $response = call_user_func_array($callback, [$request]);
-        if (is_string($response)) {
-            return new Response(200, [], $response);
-        } elseif ($response instanceof ResponseInterface) {
-            return $response;
-        } else {
-            throw new \Exception('The response is not a string or an instance of ResponseInterface');
-        }
+
+        return $this->handle($request);
     }
 
     public function getContainer(): ContainerInterface
     {
+        if ($this->container === null) {
+            $builder = new ContainerBuilder();
+
+            if ($this->definition) {
+                $builder->addDefinitions($this->definition);
+            }
+
+            foreach ($this->modules as $module) {
+                if ($module::DEFINITIONS) {
+                    $builder->addDefinitions($module::DEFINITIONS);
+                }
+            }
+
+            $this->container = $builder->build();
+        }
+
         return $this->container;
+    }
+
+    /**
+     * @return object
+     */
+    private function getMiddleware()
+    {
+        if (array_key_exists($this->index, $this->middlewares)) {
+            if (is_string($this->middlewares[$this->index])) {
+                $middleware = $this->container->get($this->middlewares[$this->index]);
+            } else {
+                $middleware = $this->middlewares[$this->index];
+            }
+            $this->index++;
+            return $middleware;
+        }
+
+        return null;
+    }
+
+    public function getModules(): array
+    {
+        return $this->modules;
     }
 }

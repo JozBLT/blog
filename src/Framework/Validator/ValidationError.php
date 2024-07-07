@@ -2,14 +2,14 @@
 
 namespace Framework\Validator;
 
-use function DI\string;
-
 class ValidationError
 {
 
     private $key;
     private $rule;
-    private $messages = [
+
+    /** @var string[] */
+    private array $messages = [
         'required' => 'Le champs %s est requis',
         'empty' => 'Le champs %s ne peut pas être vide',
         'slug' => 'Le champs %s n\'est pas un slug valide',
@@ -18,8 +18,12 @@ class ValidationError
         'betweenLength' => 'Le champs %s doit contenir entre %d et %d caractères',
         'datetime' => 'Le champs %s doit être une date valide (%s)',
         'exists' => 'Le champs %s n\'existe pas dans la table %s',
-        'unique' => 'Le champs %s existe déjà en base de données'
+        'unique' => 'Le champs %s existe déjà en base de données',
+        'fileType' => 'Le champs %s n\'est pas au format valide (%s)',
+        'uploaded' => 'Vous devez uploader un fichier',
+        'email' => 'Cet email n\'est pas valide'
     ];
+
     private array $attributes;
 
     public function __construct(string $key, string $rule, array $attributes = [])
@@ -32,7 +36,12 @@ class ValidationError
 
     public function __toString()
     {
-        $params = array_merge([$this->messages[$this->rule], $this->key], $this->attributes);
-        return (string)call_user_func_array('sprintf', $params);
+        if (!array_key_exists($this->rule, $this->messages)) {
+            return "le champs {$this->key} ne correspond pas à la règle {$this->rule}";
+        } else {
+            $params = array_merge([$this->messages[$this->rule], $this->key], $this->attributes);
+
+            return (string)call_user_func_array('sprintf', $params);
+        }
     }
 }

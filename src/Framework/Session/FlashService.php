@@ -39,6 +39,7 @@ class FlashService
         if (array_key_exists($type, $this->messages)) {
             return $this->messages[$type];
         }
+
         return null;
     }
 }

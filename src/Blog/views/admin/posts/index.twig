@@ -19,10 +19,11 @@
         </tr>
         </thead>
         <tbody>
+        {% set token_input = csrf_input() %}
         {% for item in items %}
             <tr>
                 <td>{{ item.name }}</td>
-                <td>{{ item.category_name }}</td>
+                <td>{{ item.categoryName }}</td>
                 <td>
                     <a href="{{ path(routePrefix ~ '.edit', {id: item.id}) }}" class="btn btn-primary">Éditer</a>
                     <form action="{{ path(routePrefix ~ '.delete', {id: item.id}) }}"
@@ -31,6 +32,7 @@
                           style="display: inline;">
                         <input type="hidden" name="_method" value="DELETE">
                         <button class="btn btn-danger">Supprimer</button>
+                        {{ token_input | raw }}
                     </form>
                 </td>
             </tr>

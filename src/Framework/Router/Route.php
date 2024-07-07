@@ -11,7 +11,7 @@ class Route
 
     private string $name;
 
-    private mixed $callback;
+    private mixed $callback; //type callable?
 
     private array $parameters;
 

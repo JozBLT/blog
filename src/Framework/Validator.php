@@ -2,18 +2,38 @@
 
 namespace Framework;
 
+use Framework\Database\Repository;
 use Framework\Validator\ValidationError;
+use Psr\Http\Message\UploadedFileInterface;
 
 class Validator
 {
-    private array $params;
-    private array $errors = [];
+    private const MIME_TYPES = [
+        'jpg' => 'image/jpeg',
+        'png' => 'image/png',
+        'pdf' => 'application/pdf'
+    ];
+
+    /**
+     * @var array
+     */
+    private $params;
+
+    /**
+     * @var string[]
+     */
+    private $errors = [];
 
     public function __construct(array $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * Check that fields are present in the array
+     *
+     * @param string[] ...$keys
+     */
     public function required(string ...$keys): self
     {
         foreach ($keys as $key) {
@@ -25,14 +45,21 @@ class Validator
         return $this;
     }
 
+    /**
+     * Check that the field is not empty
+     *
+     * @param string[] ...$keys
+     */
     public function notEmpty(string ...$keys): self
     {
         foreach ($keys as $key) {
             $value = $this->getValue($key);
+
             if (is_null($value) || empty($value)) {
                 $this->addError($key, 'empty');
             }
         }
+
         return $this;
     }
 
@@ -63,6 +90,7 @@ class Validator
         return $this;
     }
 
+    /** Check that the element is a slug */
     public function slug(string $key): self
     {
         $value = $this->getValue($key);
@@ -75,13 +103,14 @@ class Validator
         return $this;
     }
 
+    /** Check that a date matches the requested format */
     public function dateTime(string $key, string $format = "Y-m-d H:i:s"): self
     {
         $value = $this->getValue($key);
         $date = \DateTime::createFromFormat($format, $value);
         $errors = \DateTime::getLastErrors();
 
-        if ($errors['error_count'] > 0 || $errors['warning_count'] > 0 || $date === false) {
+        if ($date === false || ($errors !== false && ($errors['error_count'] > 0 || $errors['warning_count'] > 0))) {
             $this->addError($key, 'datetime', [$format]);
         }
 
@@ -124,6 +153,49 @@ class Validator
         return $this;
     }
 
+    /** Check if file has been uploaded */
+    public function uploaded(string $key): self
+    {
+        $file = $this->getValue($key);
+
+        if ($file === null || $file->getError() !== UPLOAD_ERR_OK) {
+            $this->addError($key, 'uploaded');
+        }
+
+        return $this;
+    }
+
+    /** Checks the email validity */
+    public function email(string $key): self
+    {
+        $value = $this->getValue($key);
+
+        if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
+            $this->addError($key, 'email');
+        }
+
+        return $this;
+    }
+
+    /** Check file's format */
+    public function extension(string $key, array $extensions): self
+    {
+        /** @var UploadedFileInterface $file */
+        $file = $this->getValue($key);
+
+        if ($file !== null && $file->getError() === UPLOAD_ERR_OK) {
+            $type = $file->getClientMediaType();
+            $extension = mb_strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+            $expectedType = self::MIME_TYPES[$extension] ?? null;
+
+            if (!in_array($extension, $extensions) || $expectedType !== $type) {
+                $this->addError($key, 'fileType', [join(',', $extensions)]);
+            }
+        }
+
+        return $this;
+    }
+
     public function isValid(): bool
     {
         return empty($this->errors);
@@ -140,8 +212,7 @@ class Validator
         $this->errors[$key] = new ValidationError($key, $rule, $attributes);
     }
 
-    /** @return mixed|null */
-    private function getValue(string $key): mixed
+    private function getValue(string $key)
     {
         if (array_key_exists($key, $this->params)) {
             return $this->params[$key];

@@ -1,28 +1,45 @@
 <?php
-global $renderer;
-require dirname(__DIR__) . '/vendor/autoload.php';
 
-$modules = [
-    \App\Admin\AdminModule::class,
-    \App\Blog\BlogModule::class
-];
+use App\Admin\AdminModule;
+use App\Auth\AuthModule;
+use App\Auth\ForbiddenMiddleware;
+use App\Blog\BlogModule;
+use App\Contact\ContactModule;
+use Framework\App;
+use Framework\Auth\LoggedInMiddleware;
+use Framework\Middleware\CsrfMiddleware;
+use Framework\Middleware\DispatcherMiddleware;
+use Framework\Middleware\MethodMiddleware;
+use Framework\Middleware\NotFoundMiddleware;
+use Framework\Middleware\RouterMiddleware;
+use Framework\Middleware\TrailingSlashMiddleware;
+use Franzl\Middleware\Whoops\WhoopsMiddleware;
+use GuzzleHttp\Psr7\ServerRequest;
+use function Http\Response\send;
 
-$builder = new \DI\ContainerBuilder();
-$builder->addDefinitions(dirname(__DIR__) . '/config/config.php');
-foreach ($modules as $module) {
-    if ($module::DEFINITIONS) {
-        $builder->addDefinitions($module::DEFINITIONS);
-    }
-}
-$builder->addDefinitions(dirname(__DIR__) . '/config.php');
-$container = $builder->build();
 
-$app =  new \Framework\App($container, $modules);
+chdir(dirname(__DIR__));
 
-if (php_sapi_name() !== 'cli') {
-    try {
-        $response = $app->run(\GuzzleHttp\Psr7\ServerRequest::fromGlobals());
-        \Http\Response\send($response);
-    } catch (Exception $e) {
-    }
+require 'vendor/autoload.php';
+
+$app =  (new App('config/config.php'))
+    ->addModule(AdminModule::class)
+    ->addModule(ContactModule::class)
+    ->addModule(BlogModule::class)
+    ->addModule(AuthModule::class);
+
+$container = $app->getContainer();
+$app->pipe(WhoopsMiddleware::class)
+    ->pipe(TrailingSlashMiddleware::class)
+    ->pipe(ForbiddenMiddleware::class)
+    ->pipe($container->get('admin.prefix'), LoggedInMiddleware::class)
+    ->pipe(MethodMiddleware::class)
+    ->pipe(CsrfMiddleware::class)
+    ->pipe(RouterMiddleware::class)
+    ->pipe(DispatcherMiddleware::class)
+    ->pipe(NotFoundMiddleware::class);
+
+if (php_sapi_name() !== "cli") {
+    $response = $app->run(ServerRequest::fromGlobals());
+    send($response);
 }
