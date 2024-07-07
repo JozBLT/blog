@@ -5,6 +5,7 @@ namespace Framework\Database;
 class Hydrator
 {
 
+    /** Transform an array into an object using setters */
     public static function hydrate(array $array, $object): mixed
     {
         if (is_string($object)) {

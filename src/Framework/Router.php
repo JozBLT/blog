@@ -2,7 +2,6 @@
 
 namespace Framework;
 
-use Exception;
 use Framework\Middleware\CallableMiddleware;
 use Framework\Router\Route;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,7 +11,6 @@ use Mezzio\Router\Route as MezzioRoute;
 /** Register and match routes */
 class Router
 {
-
     private FastRouteRouter $router;
 
     public function __construct()
@@ -20,28 +18,28 @@ class Router
         $this->router = new FastRouteRouter();
     }
 
-    public function get(string $path, callable|string $callable, ?string $name = null): void
+    /**
+     * @param string|string[] $callable
+     */
+    public function get(string $path, string|array $callable, ?string $name = null): void
     {
-        try {
-            $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['GET'], $name));
-        } catch (Exception) {
-        }
+        $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['GET'], $name));
     }
 
-    public function post(string $path, callable|string $callable, ?string $name = null): void
+    /**
+     * @param string|string[] $callable
+     */
+    public function post(string $path, string|array $callable, ?string $name = null): void
     {
-        try {
-            $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['POST'], $name));
-        } catch (Exception) {
-        }
+        $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['POST'], $name));
     }
 
-    public function delete(string $path, callable|string $callable, ?string $name = null): void
+    /**
+     * @param string|string[] $callable
+     */
+    public function delete(string $path, string|array $callable, ?string $name = null): void
     {
-        try {
-            $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['DELETE'], $name));
-        } catch (Exception) {
-        }
+        $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['DELETE'], $name));
     }
 
     /** Generate CRUD routes */
@@ -55,6 +53,10 @@ class Router
         $this->delete("$prefixPath/{id:\d+}", $callable, "$prefixName.delete");
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @return Route|null
+     */
     public function match(ServerRequestInterface $request): ?Route
     {
         $result = $this->router->match($request);
@@ -70,7 +72,6 @@ class Router
         return null;
     }
 
-    /** @throws Exception */
     public function generateUri(string $name, array $params = [], array $queryParams = []): ?string
     {
         $uri = $this->router->generateUri($name, $params);

@@ -4,17 +4,27 @@ namespace App\Blog\Actions;
 
 use App\Blog\Repository\CategoryRepository;
 use App\Blog\Repository\PostRepository;
-use Exception;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 class PostIndexAction
 {
-    private RendererInterface $renderer;
-    private PostRepository $postRepository;
-    private CategoryRepository $categoryRepository;
+
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
+
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
 
     use RouterAwareAction;
 
@@ -28,8 +38,7 @@ class PostIndexAction
         $this->categoryRepository = $categoryRepository;
     }
 
-    /** @throws Exception */
-    public function __invoke(Request $request): string|ResponseInterface
+    public function __invoke(ServerRequestInterface $request)
     {
         $params = $request->getQueryParams();
         $posts = $this->postRepository->findPublic()->paginate(12, $params['p'] ?? 1);

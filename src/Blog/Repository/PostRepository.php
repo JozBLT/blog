@@ -3,17 +3,15 @@
 namespace App\Blog\Repository;
 
 use App\Blog\Entity\Post;
-use Framework\Database\NoRecordException;
-use Framework\Database\PaginatedQuery;
 use Framework\Database\Query;
 use Framework\Database\Repository;
-use Pagerfanta\Pagerfanta;
 
 class PostRepository extends Repository
 {
-    protected ?string $entity = Post::class;
 
-    protected string $repository = 'posts';
+    protected /*?string */$entity = Post::class;
+
+    protected /*string */$repository = 'posts';
 
     public function findAll(): Query
     {

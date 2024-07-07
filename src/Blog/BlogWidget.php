@@ -9,8 +9,15 @@ use Framework\Renderer\RendererInterface;
 class BlogWidget implements AdminWidgetInterface
 {
 
-    private RendererInterface $renderer;
-    private PostRepository $postRepository;
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+
+    /**
+     * @var PostRepository
+     */
+    private $postRepository;
 
     public function __construct(RendererInterface $renderer, PostRepository $postRepository)
     {

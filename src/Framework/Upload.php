@@ -2,13 +2,14 @@
 
 namespace Framework;
 
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use Psr\Http\Message\UploadedFileInterface;
 
 class Upload
 {
 
-    protected string $path;
+    protected /*string */$path;
 
     protected $formats = [];
 
@@ -19,11 +20,15 @@ class Upload
         }
     }
 
-    public function upload(UploadedFileInterface $file, ?string $oldFile = null): ?string
+    public function upload(UploadedFileInterface $file, ?string $oldFile = null, ?string $filename = null): ?string
     {
         if ($file->getError() === UPLOAD_ERR_OK) {
             $this->delete($oldFile);
-            $targetPath = $this->addCopySuffix($this->path . DIRECTORY_SEPARATOR . $file->getClientFilename());
+            $targetPath = $this->addCopySuffix(
+                $this->path .
+                DIRECTORY_SEPARATOR .
+                ($filename ?: $file->getClientFilename())
+            );
             $dirname = pathinfo($targetPath, PATHINFO_DIRNAME);
 
             if (!file_exists($dirname)) {
@@ -52,11 +57,14 @@ class Upload
     {
         if ($oldFile) {
             $oldFile = $this->path . DIRECTORY_SEPARATOR . $oldFile;
+
             if (file_exists($oldFile)) {
                 unlink($oldFile);
             }
+
             foreach ($this->formats as $format => $_) {
                 $oldFileWithFormat = $this->getPathWithSuffix($oldFile, $format);
+
                 if (file_exists($oldFileWithFormat)) {
                     unlink($oldFileWithFormat);
                 }
@@ -75,7 +83,7 @@ class Upload
     private function generateFormats(string $targetPath)
     {
         foreach ($this->formats as $format => $size) {
-            $manager = new ImageManager('gd'); //['driver' => 'gd']
+            $manager = new ImageManager(new Driver()); //['driver' => 'gd']
             $destination = $this->getPathWithSuffix($targetPath, $format);
             [$width, $height] = $size; // $width = $size[0]; $height = $size[1]
             $manager->read($targetPath)->resize($width, $height)->save($destination);

@@ -8,18 +8,16 @@ use Framework\Renderer\RendererInterface;
 use Framework\Router;
 use Framework\Session\FlashService;
 use Framework\Validator;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 class CategoryCrudAction extends CrudAction
 {
-    protected string $viewPath = "@blog/admin/categories";
 
-    protected string $routePrefix = "blog.category.admin";
+    protected /*string */$viewPath = "@blog/admin/categories";
 
-    /**
-     * @var array|string[]
-     */
-    protected array $acceptedParams = ['name', 'slug'];
+    protected /*string */$routePrefix = "blog.category.admin";
+
+    protected /*array */$acceptedParams = ['name', 'slug'];
 
     public function __construct(
         RendererInterface $renderer,
@@ -30,7 +28,7 @@ class CategoryCrudAction extends CrudAction
         parent::__construct($renderer, $router, $repository, $flash);
     }
 
-    protected function getValidator(Request $request): Validator
+    protected function getValidator(ServerRequestInterface $request): Validator
     {
         return parent::getValidator($request)
             ->required('name', 'slug')

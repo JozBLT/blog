@@ -10,13 +10,22 @@ use Framework\Session\SessionInterface;
 class DatabaseAuth implements Auth
 {
 
-    private UserRepository $userRepository;
-    private SessionInterface $session;
-    private \App\Auth\User $user;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
+    /**
+     * @var \App\Auth\User
+     */
+    private $user;
 
     public function __construct(UserRepository $userRepository, SessionInterface $session)
     {
-
         $this->userRepository = $userRepository;
         $this->session = $session;
     }
@@ -28,13 +37,13 @@ class DatabaseAuth implements Auth
         }
 
         try {
+            /** @var \App\Auth\User $user */
             $user = $this->userRepository->findBy('username', $username);
         } catch (NoRecordException $e) {
 
             return null;
         }
 
-        /** @var \App\Auth\User $user */
         if ($user && password_verify($password, $user->password)) {
             $this->session->set('auth.user', $user->id);
 
@@ -49,8 +58,14 @@ class DatabaseAuth implements Auth
         $this->session->delete('auth.user');
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser(): ?User
     {
+        if ($this->user) {
+            return $this->user;
+        }
         $userId = $this->session->get('auth.user');
 
         if ($userId) {

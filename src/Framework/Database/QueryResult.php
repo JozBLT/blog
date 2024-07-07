@@ -2,9 +2,11 @@
 
 namespace Framework\Database;
 
+use ArrayAccess;
 use Exception;
+use Iterator;
 
-class QueryResult implements \ArrayAccess, \Iterator
+class QueryResult implements ArrayAccess, Iterator
 {
 
     private array $records;
@@ -18,6 +20,7 @@ class QueryResult implements \ArrayAccess, \Iterator
         $this->entity = $entity;
     }
 
+    /** Retrieves an element at the defined index */
     public function get(int $index): mixed
     {
         if ($this->entity) {
@@ -31,48 +34,63 @@ class QueryResult implements \ArrayAccess, \Iterator
         return $this->entity;
     }
 
+    /** Return the current element */
     public function current(): mixed
     {
         return $this->get($this->index);
     }
 
+    /**Move forward to next element */
     public function next(): void
     {
         $this->index++;
     }
 
+    /** Return the key of the current element */
     public function key(): int
     {
         return $this->index;
     }
 
+    /** Checks if current position is valid */
     public function valid(): bool
     {
         return isset($this->records[$this->index]);
     }
 
+    /** Rewind the Iterator to the first element */
     public function rewind(): void
     {
         $this->index = 0;
     }
 
+    /** Checks whether an offset exists */
     public function offsetExists(mixed $offset): bool
     {
         return isset($this->records[$offset]);
     }
 
+    /** Offset to retrieve */
     public function offsetGet(mixed $offset): mixed
     {
         return $this->get($offset);
     }
 
-    /** @throws Exception */
+    /**
+     * Offset to set
+     *
+     * @throws Exception
+     */
     public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new Exception("Can't alter records");
     }
 
-    /** @throws Exception */
+    /**
+     * Offset to unset
+     *
+     * @throws Exception
+     */
     public function offsetUnset(mixed $offset): void
     {
         throw new Exception("Can't alter records");

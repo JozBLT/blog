@@ -2,19 +2,31 @@
 
 namespace Framework\Database;
 
-use Pagerfanta\Pagerfanta;
+use App\Auth\User;
 use PDO;
+use stdClass;
 
 class Repository
 {
 
-    protected PDO $pdo;
+    /**
+     * @var PDO|null
+     */
+    protected /*null|PDO */$pdo;
 
-    /** Nom de la table en BDD */
-    protected string $repository;
+    /**
+     * Table name in database
+     *
+     * @var string
+     */
+    protected /*string */$repository;
 
-    /** Entité à utiliser */
-    protected ?string $entity = \stdClass::class;
+    /**
+     * Entity to use
+     *
+     * @var string
+     */
+    protected /*string */$entity = stdClass::class;
 
     public function __construct(PDO $pdo)
     {
@@ -54,7 +66,7 @@ class Repository
      *
      * @throws NoRecordException
      */
-    public function findBy(string $field, string $value): mixed
+    public function findBy(string $field, string $value): array|stdClass|User
     {
         return $this->makeQuery()->where("$field = :field")->params(["field" => $value])->fetchOrFail();
     }
@@ -125,7 +137,7 @@ class Repository
     }
 
     /** Check if an element exists */
-    public function exists($id): bool
+    public function exists(int $id): bool
     {
         $query = $this->pdo->prepare("SELECT id FROM {$this->repository} WHERE id = ?");
         $query->execute([$id]);

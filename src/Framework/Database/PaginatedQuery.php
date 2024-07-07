@@ -7,7 +7,11 @@ use PDO;
 
 class PaginatedQuery implements AdapterInterface
 {
-    private Query $query;
+
+    /**
+     * @var Query
+     */
+    private $query;
 
     public function __construct(Query $query)
     {

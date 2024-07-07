@@ -2,7 +2,9 @@
 
 namespace Framework\Exception;
 
-class CsrfInvalidException extends \Exception
+use Exception;
+
+class CsrfInvalidException extends Exception
 {
 
 }

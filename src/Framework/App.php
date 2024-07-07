@@ -16,14 +16,30 @@ use Psr\Http\Server\RequestHandlerInterface;
 class App implements RequestHandlerInterface
 {
 
-    /** List of modules */
-    private array $modules = [];
-    private string|array|null $definition;
-    private ContainerInterface $container;
+    /**
+     * List of modules
+     * @var array
+     */
+    private $modules = [];
+    /**
+     * @var string|array|null
+     */
+    private $definition;
 
-    /** @var string[] */
-    private array $middlewares = [];
-    private int $index = 0;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @var string[]
+     */
+    private $middlewares = [];
+
+    /**
+     * @var int
+     */
+    private $index = 0;
 
     public function __construct($definition = null)
     {
@@ -53,17 +69,12 @@ class App implements RequestHandlerInterface
         return $this;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = $this->getMiddleware();
 
         if (is_null($middleware)) {
-            throw new Exception('No middleware intercepted this request');
+            throw new Exception('Aucun middleware n\'a intercepté cette requête');
         } elseif (is_callable($middleware)) {
             return call_user_func_array($middleware, [$request, [$this, 'handle']]);
         } elseif ($middleware instanceof MiddlewareInterface) {
@@ -73,11 +84,6 @@ class App implements RequestHandlerInterface
         return $middleware->process($request, $this);
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Exception
-     */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         foreach ($this->modules as $module) {
@@ -87,31 +93,31 @@ class App implements RequestHandlerInterface
         return $this->handle($request);
     }
 
-    /** @throws Exception */
     public function getContainer(): ContainerInterface
     {
-        $builder = new ContainerBuilder();
+        if ($this->container === null) {
+            $builder = new ContainerBuilder();
 
-        if ($this->definition) {
-            $builder->addDefinitions($this->definition);
-        }
-
-        foreach ($this->modules as $module) {
-            if ($module::DEFINITIONS) {
-                $builder->addDefinitions($module::DEFINITIONS);
+            if ($this->definition) {
+                $builder->addDefinitions($this->definition);
             }
-        }
 
-        $this->container = $builder->build();
+            foreach ($this->modules as $module) {
+                if ($module::DEFINITIONS) {
+                    $builder->addDefinitions($module::DEFINITIONS);
+                }
+            }
+
+            $this->container = $builder->build();
+        }
 
         return $this->container;
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @return object
      */
-    private function getMiddleware(): ?object
+    private function getMiddleware()
     {
         if (array_key_exists($this->index, $this->middlewares)) {
             if (is_string($this->middlewares[$this->index])) {
@@ -120,7 +126,6 @@ class App implements RequestHandlerInterface
                 $middleware = $this->middlewares[$this->index];
             }
             $this->index++;
-
             return $middleware;
         }
 

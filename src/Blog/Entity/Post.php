@@ -3,7 +3,6 @@
 namespace App\Blog\Entity;
 
 use DateTime;
-use Exception;
 
 class Post
 {
@@ -22,9 +21,6 @@ class Post
 
     public $image;
 
-    /**
-     * @throws Exception
-     */
     public function setCreatedAt($datetime)
     {
         if (is_string($datetime)) {
@@ -32,9 +28,6 @@ class Post
         }
     }
 
-    /**
-     * @throws Exception
-     */
     public function setUpdatedAt($datetime)
     {
         if (is_string($datetime)) {
@@ -42,13 +35,13 @@ class Post
         }
     }
 
-    public function getThumb(): string
+    public function getThumb()
     {
         ['fileName' => $fileName, 'extension' => $extension] = pathinfo($this->image);
         return '/uploads/posts/' . $fileName . '_thumb.' . $extension;
     }
 
-    public function imageUrl()
+    public function getImageUrl()
     {
         return '/uploads/posts/' . $this->image;
     }

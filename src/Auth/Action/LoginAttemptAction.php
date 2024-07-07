@@ -14,10 +14,19 @@ use Psr\Http\Message\ServerRequestInterface;
 class LoginAttemptAction
 {
 
-    private RendererInterface $renderer;
-    private DatabaseAuth $auth;
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+    /**
+     * @var DatabaseAuth
+     */
+    private $auth;
     private Router $router;
-    private SessionInterface $session;
+    /**
+     * @var SessionInterface
+     */
+    private $session;
 
     use RouterAwareAction;
 
@@ -44,6 +53,7 @@ class LoginAttemptAction
             $this->session->delete('auth.redirect');
 
             return new RedirectResponse($path);
+
         } else {
             (new FlashService($this->session))->error('Identifiant ou mot de passe incorrect');
 

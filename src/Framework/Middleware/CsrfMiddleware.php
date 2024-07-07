@@ -2,6 +2,7 @@
 
 namespace Framework\Middleware;
 
+use ArrayAccess;
 use Exception;
 use Framework\Exception\CsrfInvalidException;
 use Psr\Http\Message\ResponseInterface;
@@ -9,6 +10,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Random\RandomException;
+use TypeError;
 
 class CsrfMiddleware implements MiddlewareInterface
 {
@@ -16,7 +18,7 @@ class CsrfMiddleware implements MiddlewareInterface
     private string $formKey;
     private string $sessionKey;
     private int $limit;
-    private \ArrayAccess $session;
+    private ArrayAccess $session;
 
     public function __construct(
         &$session,
@@ -90,8 +92,8 @@ class CsrfMiddleware implements MiddlewareInterface
 
     private function validSession($session): void
     {
-        if (!is_array($session) && !$session instanceof \ArrayAccess) {
-            throw new \TypeError('Session passed to CSRF middleware is not processable as an array');
+        if (!is_array($session) && !$session instanceof ArrayAccess) {
+            throw new TypeError('Session passed to CSRF middleware is not processable as an array');
         }
     }
 

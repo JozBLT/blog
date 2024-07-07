@@ -2,6 +2,7 @@
 
 namespace Framework\Twig;
 
+use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -19,6 +20,7 @@ class FormExtension extends AbstractExtension
         ];
     }
 
+    /** Generates the HTML code of a field */
     public function field(array $context, string $key, mixed $value, ?string $label = null, array $options = []): string
     {
         $type = $options['type'] ?? 'text';
@@ -58,7 +60,7 @@ class FormExtension extends AbstractExtension
 
     private function convertValue($value): string
     {
-        if ($value instanceof \DateTime) {
+        if ($value instanceof DateTime) {
             return $value->format('Y-m-d H:i:s');
         }
 

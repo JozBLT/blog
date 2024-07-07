@@ -8,15 +8,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class LoginAction
 {
 
-    private RendererInterface $renderer;
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
 
     public function __construct(RendererInterface $renderer)
     {
-
         $this->renderer = $renderer;
     }
 
-    public function __invoke(ServerRequestInterface $request): string
+    public function __invoke(ServerRequestInterface $request)
     {
         return $this->renderer->render('@auth/login');
     }

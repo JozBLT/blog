@@ -9,6 +9,7 @@ use Framework\Router;
 
 class AdminModule extends Module
 {
+
     const DEFINITIONS = __DIR__ . '/config.php';
 
     public function __construct(
@@ -17,6 +18,7 @@ class AdminModule extends Module
         AdminTwigExtension $adminTwigExtension,
         string $prefix
     ) {
+
         $renderer->addPath('admin', __DIR__ . '/views');
         $router->get($prefix, DashboardAction::class, 'admin');
         if ($renderer instanceof TwigRenderer) {

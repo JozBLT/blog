@@ -2,6 +2,7 @@
 
 namespace Framework;
 
+use Framework\Database\Repository;
 use Framework\Validator\ValidationError;
 use Psr\Http\Message\UploadedFileInterface;
 
@@ -12,17 +13,27 @@ class Validator
         'png' => 'image/png',
         'pdf' => 'application/pdf'
     ];
-    private array $params;
+
+    /**
+     * @var array
+     */
+    private $params;
+
     /**
      * @var string[]
      */
-    private array $errors = [];
+    private $errors = [];
 
     public function __construct(array $params)
     {
         $this->params = $params;
     }
 
+    /**
+     * Check that fields are present in the array
+     *
+     * @param string[] ...$keys
+     */
     public function required(string ...$keys): self
     {
         foreach ($keys as $key) {
@@ -34,14 +45,21 @@ class Validator
         return $this;
     }
 
+    /**
+     * Check that the field is not empty
+     *
+     * @param string[] ...$keys
+     */
     public function notEmpty(string ...$keys): self
     {
         foreach ($keys as $key) {
             $value = $this->getValue($key);
+
             if (is_null($value) || empty($value)) {
                 $this->addError($key, 'empty');
             }
         }
+
         return $this;
     }
 
@@ -72,6 +90,7 @@ class Validator
         return $this;
     }
 
+    /** Check that the element is a slug */
     public function slug(string $key): self
     {
         $value = $this->getValue($key);
@@ -84,13 +103,14 @@ class Validator
         return $this;
     }
 
+    /** Check that a date matches the requested format */
     public function dateTime(string $key, string $format = "Y-m-d H:i:s"): self
     {
         $value = $this->getValue($key);
         $date = \DateTime::createFromFormat($format, $value);
         $errors = \DateTime::getLastErrors();
 
-        if ($errors['error_count'] > 0 || $errors['warning_count'] > 0 || $date === false) {
+        if ($date === false || ($errors !== false && ($errors['error_count'] > 0 || $errors['warning_count'] > 0))) {
             $this->addError($key, 'datetime', [$format]);
         }
 
@@ -192,8 +212,7 @@ class Validator
         $this->errors[$key] = new ValidationError($key, $rule, $attributes);
     }
 
-    /** @return mixed|null */
-    private function getValue(string $key): mixed
+    private function getValue(string $key)
     {
         if (array_key_exists($key, $this->params)) {
             return $this->params[$key];

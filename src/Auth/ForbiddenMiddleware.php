@@ -14,12 +14,18 @@ use Psr\Http\Server\RequestHandlerInterface;
 class ForbiddenMiddleware implements MiddlewareInterface
 {
 
-    private string $loginPath;
-    private SessionInterface $session;
+    /**
+     * @var string
+     */
+    private $loginPath;
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
 
     public function __construct(string $loginPath, SessionInterface $session)
     {
-
         $this->loginPath = $loginPath;
         $this->session = $session;
     }
@@ -28,11 +34,20 @@ class ForbiddenMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (ForbiddenException $e) {
-            $this->session->set('auth.redirect', $request->getUri()->getPath());
-            (new FlashService($this->session))->error('Vous devez posséder un compte pour accéder à cette page');
-
-            return new RedirectResponse($this->loginPath);
+        } catch (ForbiddenException $exception) {
+            return $this->redirectLogin($request);
+        } catch ( \TypeError $error) {
+            if (strpos($error->getMessage(), \Framework\Auth\User::class) !== false) {
+                return $this->redirectLogin($request);
+            }
+            throw $error;
         }
+    }
+
+    public function redirectLogin(ServerRequestInterface $request): ResponseInterface
+    {
+        $this->session->set('auth.redirect', $request->getUri()->getPath());
+        (new FlashService($this->session))->error('Vous devez posséder un compte pour accéder à cette page');
+        return new RedirectResponse($this->loginPath);
     }
 }

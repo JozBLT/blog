@@ -9,13 +9,21 @@ class Query implements \IteratorAggregate
 {
 
     private $select;
+
     private $from;
+
     private $where = [];
+
     private $entity;
+
     private $order;
+
     private $limit;
+
     private $joins;
+
     private $pdo;
+
     private $params = [];
 
     public function __construct(?\PDO $pdo = null)
@@ -59,7 +67,7 @@ class Query implements \IteratorAggregate
         return $this;
     }
 
-    /** Adds a JOIN link */
+    /** Adds a JOIN */
     public function join(string $table, string $condition, string $type = "left"): self
     {
         $this->joins[$type][] = [$table, $condition];

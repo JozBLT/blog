@@ -2,6 +2,7 @@
 
 namespace Framework\Twig;
 
+use DateTime;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 
@@ -18,10 +19,10 @@ class TimeExtension extends AbstractExtension
         ];
     }
 
-    public function ago(\DateTime $date, string $format = 'd/m/Y H:i')
+    public function ago(DateTime $date, string $format = 'd/m/Y H:i')
     {
         return '<span class="timeago" datetime="' .
-            $date->format(\DateTime::ISO8601_EXPANDED) . '">' .
+            $date->format(DateTime::ISO8601_EXPANDED) . '">' .
             $date->format($format) . '</span>';
     }
 }

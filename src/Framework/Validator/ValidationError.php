@@ -2,8 +2,6 @@
 
 namespace Framework\Validator;
 
-use function DI\string;
-
 class ValidationError
 {
 
@@ -25,6 +23,7 @@ class ValidationError
         'uploaded' => 'Vous devez uploader un fichier',
         'email' => 'Cet email n\'est pas valide'
     ];
+
     private array $attributes;
 
     public function __construct(string $key, string $rule, array $attributes = [])

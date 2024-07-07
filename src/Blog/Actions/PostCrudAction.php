@@ -13,16 +13,22 @@ use Framework\Session\FlashService;
 use Framework\Validator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
 
 class PostCrudAction extends CrudAction
 {
-    protected string $viewPath = "@blog/admin/posts";
+    protected /*string */$viewPath = "@blog/admin/posts";
 
-    protected string $routePrefix = "blog.admin";
+    protected /*string */$routePrefix = "blog.admin";
 
-    private CategoryRepository $categoryRepository;
-    private PostUpload $postUpload;
+    /**
+     * @var CategoryRepository
+     */
+    private $categoryRepository;
+
+    /**
+     * @var PostUpload
+     */
+    private $postUpload;
 
     public function __construct(
         RendererInterface $renderer,
@@ -52,17 +58,20 @@ class PostCrudAction extends CrudAction
         return $params;
     }
 
-    /** @return Post[] */
-    protected function getNewEntity(): array
+    protected function getNewEntity()
     {
         $post = new Post();
         $post->created_at = new \DateTime();
 
-        return [$post];
+        return $post;
     }
 
-    /** @param Post $post */
-    protected function getParams(Request $request, $post): array
+    /**
+     * @param ServerRequestInterface $request
+     * @param Post $post
+     * @return array
+     */
+    protected function getParams(ServerRequestInterface $request, $post): array
     {
         $params = array_merge($request->getParsedBody(), $request->getUploadedFiles());
         $image = $this->postUpload->upload($params['image'], $post->image);
@@ -80,7 +89,7 @@ class PostCrudAction extends CrudAction
         return array_merge($params, ['updated_at' => date('Y-m-d H:i:s')]);
     }
 
-    protected function getValidator(Request $request): Validator
+    protected function getValidator(ServerRequestInterface $request): Validator
     {
         $validator = parent::getValidator($request)
             ->required('content', 'name', 'slug', 'created_at', 'category_id')

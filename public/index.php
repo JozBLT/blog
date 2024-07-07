@@ -17,7 +17,6 @@ use Franzl\Middleware\Whoops\WhoopsMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use function Http\Response\send;
 
-global $renderer; // useless?
 
 chdir(dirname(__DIR__));
 
@@ -25,9 +24,9 @@ require 'vendor/autoload.php';
 
 $app =  (new App('config/config.php'))
     ->addModule(AdminModule::class)
+    ->addModule(ContactModule::class)
     ->addModule(BlogModule::class)
-    ->addModule(AuthModule::class)
-    ->addModule(ContactModule::class);
+    ->addModule(AuthModule::class);
 
 $container = $app->getContainer();
 $app->pipe(WhoopsMiddleware::class)

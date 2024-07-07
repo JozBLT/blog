@@ -2,6 +2,8 @@
 
 {% block body %}
 
+    <h1>Me Contacter</h1>
+
     {% if flash('success') %}
         <div class="alert alert-success">
             {{ flash('success') }}
@@ -13,8 +15,6 @@
             {{ flash('error') }}
         </div>
     {% endif %}
-
-    <h1>Me Contacter</h1>
 
     <form action="{{ path('contact') }}" method="post">
         {{ csrf_input() }}

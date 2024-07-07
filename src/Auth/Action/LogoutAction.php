@@ -11,13 +11,21 @@ use Psr\Http\Message\ServerRequestInterface;
 class LogoutAction
 {
 
-    private RendererInterface $renderer;
-    private DatabaseAuth $auth;
-    private FlashService $flashService;
+    /**
+     * @var RendererInterface
+     */
+    private $renderer;
+    /**
+     * @var DatabaseAuth
+     */
+    private $auth;
+    /**
+     * @var FlashService
+     */
+    private $flashService;
 
     public function __construct(RendererInterface $renderer, DatabaseAuth $auth, FlashService $flashService)
     {
-
         $this->renderer = $renderer;
         $this->auth = $auth;
         $this->flashService = $flashService;

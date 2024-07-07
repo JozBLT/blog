@@ -11,11 +11,13 @@ use Psr\Http\Server\RequestHandlerInterface;
 class LoggedInMiddleware implements MiddlewareInterface
 {
 
-    private Auth $auth;
+    /**
+     * @var Auth
+     */
+    private $auth;
 
     public function __construct(Auth $auth)
     {
-
         $this->auth = $auth;
     }
 

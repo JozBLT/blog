@@ -7,23 +7,20 @@ use App\Blog\Actions\CategoryShowAction;
 use App\Blog\Actions\PostCrudAction;
 use App\Blog\Actions\PostIndexAction;
 use App\Blog\Actions\PostShowAction;
-use Framework\Renderer\RendererInterface;
 use Framework\Module;
+use Framework\Renderer\RendererInterface;
 use Framework\Router;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
 class BlogModule extends Module
 {
+
     const DEFINITIONS = __DIR__ . '/config.php';
+
     const MIGRATIONS  = __DIR__ . '/Database/migrations';
+
     const SEEDS  = __DIR__ . '/Database/seeds';
 
-    /**
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
     public function __construct(ContainerInterface $container)
     {
         $blogPrefix = $container->get('blog.prefix');
