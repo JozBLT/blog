@@ -6,6 +6,7 @@ use Framework\Middleware\CsrfMiddleware;
 use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
 use Framework\Router;
+use Framework\Router\RouterFactory;
 use Framework\Router\RouterTwigExtension;
 use Framework\Session\PHPSession;
 use Framework\Session\SessionInterface;
@@ -16,7 +17,6 @@ use Framework\Twig\PagerFantaExtension;
 use Framework\Twig\TextExtension;
 use Framework\Twig\TimeExtension;
 use Psr\Container\ContainerInterface;
-
 use Symfony\Component\Mailer\Mailer;
 
 use function DI\{get, autowire, factory, env};
@@ -38,8 +38,11 @@ return [
       get(CsrfExtension::class)
     ],
     SessionInterface::class => autowire(PHPSession::class),
-    CsrfMiddleware::class => autowire()->constructor(get(sessionInterface::class)),
-    Router::class => autowire(),
+    CsrfMiddleware::class => function (ContainerInterface $c) {
+        $session = $c->get(SessionInterface::class);
+        return new CsrfMiddleware($session);
+    },
+    Router::class => factory(RouterFactory::class),
     RendererInterface::class => factory(TwigRendererFactory::class),
     PDO::class => function (ContainerInterface $c) {
         return  new PDO(
@@ -53,7 +56,7 @@ return [
         );
     },
     //Mailer
-    'mail.to' => 'admin@admin.fr',
-    'mail.from' => 'no-reply@admin.fr',
+    'mail.to' => 'admin@admin.fr', // créer une boite mail pour la réception
+    'mail.from' => 'no-reply@blogAdmin.fr',
     Mailer::class => factory(MailerFactory::class)
 ];
