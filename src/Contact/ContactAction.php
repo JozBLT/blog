@@ -56,7 +56,6 @@ class ContactAction
             $this->mailer->send($email);
 
             return new RedirectResponse((string)$request->getUri());
-
         } else {
             $this->flashService->error('Merci de corriger vos erreur');
             $errors = $validator->getErrors();
@@ -64,5 +63,4 @@ class ContactAction
             return $this->renderer->render('@contact/contact', compact('errors'));
         }
     }
-
 }

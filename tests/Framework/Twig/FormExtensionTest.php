@@ -38,7 +38,7 @@
         $this->assertSimilar("
             <div class=\"form-group\">
                 <label for=\"name\">Titre</label>
-                <input type=\"text\" class=\"form-control\" name=\"name\" id=\"name\" value=\"demo\">
+                <input class=\"form-control\" name=\"name\" id=\"name\" type=\"text\" value=\"demo\">
             </div>
         ", $html);
      }
@@ -55,7 +55,7 @@
         $this->assertSimilar("
             <div class=\"form-group\">
                 <label for=\"name\">Titre</label>
-                <input type=\"text\" class=\"form-control demo\" name=\"name\" id=\"name\" value=\"demo\">
+                <input class=\"form-control demo\" name=\"name\" id=\"name\" type=\"text\" value=\"demo\">
             </div>
         ", $html);
      }
@@ -89,7 +89,7 @@
          $this->assertSimilar("
             <div class=\"form-group\">
                 <label for=\"name\">Titre</label>
-                <input type=\"text\" class=\"form-control is-invalid\" name=\"name\" id=\"name\" value=\"demo\">
+                <input class=\"form-control is-invalid\" name=\"name\" id=\"name\" type=\"text\" value=\"demo\">
                 <div class=\"invalid-feedback\">
                 Le champs name doit contenir entre 2 et 250 caractères.
                 </div>
