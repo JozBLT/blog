@@ -132,8 +132,13 @@ class Validator
     }
 
     /** Check if key is unique */
-    public function unique(string $key, string $repository, \PDO $pdo, ?int $exclude = null): self
+    public function unique(string $key, string|Repository $repository, ?\PDO $pdo = null, ?int $exclude = null): self
     {
+        if ($repository instanceof Repository) {
+            $pdo = $repository->getPdo();
+            $repository = $repository->getRepository();
+        }
+
         $value = $this->getValue($key);
         $query = "SELECT id FROM $repository WHERE $key = ?";
         $params = [$value];
@@ -172,6 +177,18 @@ class Validator
 
         if (filter_var($value, FILTER_VALIDATE_EMAIL) === false) {
             $this->addError($key, 'email');
+        }
+
+        return $this;
+    }
+
+    public function confirm(string $key): self
+    {
+        $value = $this->getValue($key);
+        $valueConfirm = $this->getValue($key . '_confirm');
+
+        if ($valueConfirm !== $value) {
+            $this->addError($key, 'confirm');
         }
 
         return $this;

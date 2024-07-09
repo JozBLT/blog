@@ -58,8 +58,7 @@ class App implements RequestHandlerInterface
     public function pipe(
         string|callable|MiddlewareInterface $routePrefix,
         string|callable|MiddlewareInterface|null $middleware = null
-    ): self
-    {
+    ): self {
         if ($middleware === null) {
             $this->middlewares[] = $routePrefix;
         } else {

@@ -20,5 +20,4 @@ class MailerFactory
 
         return new Mailer($transport);
     }
-
 }

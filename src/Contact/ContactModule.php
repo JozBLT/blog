@@ -17,5 +17,4 @@ class ContactModule extends Module
         $router->get('/contact', ContactAction::class, 'contact');
         $router->post('/contact', ContactAction::class);
     }
-
 }

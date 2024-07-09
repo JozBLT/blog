@@ -40,12 +40,11 @@ class DatabaseAuth implements Auth
             /** @var \App\Auth\User $user */
             $user = $this->userRepository->findBy('username', $username);
         } catch (NoRecordException $e) {
-
             return null;
         }
 
         if ($user && password_verify($password, $user->password)) {
-            $this->session->set('auth.user', $user->id);
+            $this->setUser($user);
 
             return $user;
         }
@@ -73,7 +72,6 @@ class DatabaseAuth implements Auth
                 $this->user = $this->userRepository->find($userId);
 
                 return $this->user;
-
             } catch (NoRecordException $e) {
                 $this->session->delete('auth.user');
 
@@ -82,5 +80,11 @@ class DatabaseAuth implements Auth
         }
 
         return null;
+    }
+
+    public function setUser(\App\Auth\User $user): void
+    {
+        $this->session->set('auth.user', $user->id);
+        $this->user = $user;
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Account\AccountModule;
 use App\Admin\AdminModule;
 use App\Auth\AuthModule;
 use App\Auth\ForbiddenMiddleware;
@@ -17,7 +18,6 @@ use Franzl\Middleware\Whoops\WhoopsMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use function Http\Response\send;
 
-
 chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
@@ -26,7 +26,8 @@ $app =  (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(ContactModule::class)
     ->addModule(BlogModule::class)
-    ->addModule(AuthModule::class);
+    ->addModule(AuthModule::class)
+    ->addModule(AccountModule::class);
 
 $container = $app->getContainer();
 $app->pipe(WhoopsMiddleware::class)

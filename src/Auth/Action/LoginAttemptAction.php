@@ -53,7 +53,6 @@ class LoginAttemptAction
             $this->session->delete('auth.redirect');
 
             return new RedirectResponse($path);
-
         } else {
             (new FlashService($this->session))->error('Identifiant ou mot de passe incorrect');
 
