@@ -4,6 +4,7 @@ namespace Framework;
 
 use DI\ContainerBuilder;
 use Exception;
+use Framework\Middleware\CombinedMiddleware;
 use Framework\Middleware\RoutePrefixedMiddleware;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -21,10 +22,11 @@ class App implements RequestHandlerInterface
      * @var array
      */
     private $modules = [];
+
     /**
      * @var string|array|null
      */
-    private $definition;
+    private $definitions;
 
     /**
      * @var ContainerInterface
@@ -41,9 +43,9 @@ class App implements RequestHandlerInterface
      */
     private $index = 0;
 
-    public function __construct($definition = null)
+    public function __construct($definitions = null)
     {
-        $this->definition = $definition;
+        $this->definitions = $definitions;
     }
 
     /** Add a module to the app */
@@ -70,15 +72,12 @@ class App implements RequestHandlerInterface
 
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $middleware = $this->getMiddleware();
+        $this->index++;
 
-        if (is_null($middleware)) {
-            throw new Exception('Aucun middleware n\'a intercepté cette requête');
-        } elseif (is_callable($middleware)) {
-            return call_user_func_array($middleware, [$request, [$this, 'handle']]);
-        } elseif ($middleware instanceof MiddlewareInterface) {
-            return $middleware->process($request, $this);
+        if ($this->index > 1) {
+            throw new \Exception();
         }
+        $middleware = new CombinedMiddleware($this->getContainer(), $this->middlewares);
 
         return $middleware->process($request, $this);
     }
@@ -103,8 +102,8 @@ class App implements RequestHandlerInterface
                 $builder->writeProxiesToFile(true, __DIR__ . '/tmp/proxies');
             }
 
-            if ($this->definition) {
-                $builder->addDefinitions($this->definition);
+            if ($this->definitions) {
+                $builder->addDefinitions($this->definitions);
             }
 
             foreach ($this->modules as $module) {
@@ -117,24 +116,6 @@ class App implements RequestHandlerInterface
         }
 
         return $this->container;
-    }
-
-    /**
-     * @return object
-     */
-    private function getMiddleware()
-    {
-        if (array_key_exists($this->index, $this->middlewares)) {
-            if (is_string($this->middlewares[$this->index])) {
-                $middleware = $this->container->get($this->middlewares[$this->index]);
-            } else {
-                $middleware = $this->middlewares[$this->index];
-            }
-            $this->index++;
-            return $middleware;
-        }
-
-        return null;
     }
 
     public function getModules(): array
