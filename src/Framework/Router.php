@@ -21,28 +21,33 @@ class Router
         ]);
     }
 
-    /**
-     * @param string|string[] $callable
-     */
+    /** @param string|string[] $callable */
     public function get(string $path, string|array $callable, ?string $name = null): void
     {
         $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['GET'], $name));
     }
 
-    /**
-     * @param string|string[] $callable
-     */
+    /** @param string|string[] $callable */
     public function post(string $path, string|array $callable, ?string $name = null): void
     {
         $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['POST'], $name));
     }
 
-    /**
-     * @param string|string[] $callable
-     */
+    /** @param string|string[] $callable */
     public function delete(string $path, string|array $callable, ?string $name = null): void
     {
         $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), ['DELETE'], $name));
+    }
+
+    /** @param string|string[] $callable */
+    public function any(string $path, string|array $callable, ?string $name = null): void
+    {
+        $this->router->addRoute(new MezzioRoute($path, new CallableMiddleware($callable), [
+            'GET',
+            'POST',
+            'DELETE',
+            'PUT'
+        ], $name));
     }
 
     /** Generate CRUD routes */

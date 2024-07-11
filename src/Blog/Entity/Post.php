@@ -24,14 +24,18 @@ class Post
     public function setCreatedAt($datetime)
     {
         if (is_string($datetime)) {
-            $this->createdAt = new DateTime($datetime);
+            $this->createdAt = new \DateTime($datetime);
+        } else {
+            $this->createdAt = $datetime;
         }
     }
 
     public function setUpdatedAt($datetime)
     {
         if (is_string($datetime)) {
-            $this->updatedAt = new DateTime($datetime);
+            $this->updatedAt = new \DateTime($datetime);
+        } else {
+            $this->updatedAt = $datetime;
         }
     }
 
