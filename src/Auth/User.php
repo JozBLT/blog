@@ -13,9 +13,6 @@ class User implements \Framework\Auth\User
 
     public /*string */$password;
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->username;

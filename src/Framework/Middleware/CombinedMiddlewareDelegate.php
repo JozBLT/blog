@@ -64,7 +64,6 @@ class CombinedMiddlewareDelegate implements RequestHandlerInterface
     private function getMiddleware()
     {
         if (array_key_exists($this->index, $this->middlewares)) {
-
             if (is_string($this->middlewares[$this->index])) {
                 $middleware = $this->container->get($this->middlewares[$this->index]);
             } else {
