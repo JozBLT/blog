@@ -81,7 +81,7 @@ class CrudAction
         if ($request->getMethod() === 'DELETE') {
             return $this->delete($request);
         }
-        if (substr((string)$request->getUri(), -3) === 'new') {
+        if (str_ends_with((string)$request->getUri(), 'new')) {
             return $this->create($request);
         }
         if ($request->getAttribute('id')) {

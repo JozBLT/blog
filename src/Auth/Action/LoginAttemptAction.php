@@ -49,7 +49,14 @@ class LoginAttemptAction
         $user = $this->auth->login($params['username'], $params['password']);
 
         if ($user) {
-            $path = $this->session->get('auth.redirect') ?: $this->router->generateUri('admin');
+            $path = $this->session->get('auth.redirect');
+
+            if (!$path && $user->getRole() === 'admin') {
+                $path = $this->router->generateUri('admin');
+            } else {
+                $path = $this->router->generateUri('homepage');
+            }
+
             $this->session->delete('auth.redirect');
 
             return new RedirectResponse($path);

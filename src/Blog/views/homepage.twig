@@ -1,0 +1,19 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+
+    {% if flash('error') %}
+        <div class="alert alert-danger">
+            {{ flash('error') }}
+        </div>
+    {% endif %}
+
+    {% if flash('success') %}
+        <div class="alert alert-success">
+            {{ flash('success') }}
+        </div>
+    {% endif %}
+
+    <h1>HELLO</h1>
+
+{% endblock %}

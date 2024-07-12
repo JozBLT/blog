@@ -1,9 +1,18 @@
 <div class="col-sm-4">
-    <div class="card">
-        <div class="card-block">
-            <h4 class="card-title">{{ count }}</h4>
-            <p class="card-text">Article{% if count > 1 %}s{% endif %}</p>
-            <a href="{{ path('blog.admin.index') }}" class="btn btn-primary">Gérer les articles</a>
+    <div class="row">
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">{{ postCount }}</h4>
+                <p class="card-text">Article{% if postCount > 1 %}s{% endif %}</p>
+                <a href="{{ path('blog.admin.index') }}" class="btn btn-primary">Gérer les articles</a>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-block">
+                <h4 class="card-title">{{ categoryCount }}</h4>
+                <p class="card-text">Catégorie{% if categoryCount > 1 %}s{% endif %}</p>
+                <a href="{{ path('blog.category.admin.index') }}" class="btn btn-primary">Gérer les catégories</a>
+            </div>
         </div>
     </div>
 </div>
