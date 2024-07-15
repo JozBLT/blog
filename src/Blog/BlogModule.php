@@ -34,7 +34,7 @@ class BlogModule extends Module
 
         if ($container->has('admin.prefix')) {
             $prefix = $container->get('admin.prefix');
-            $router->crud("$prefix/posts", PostCrudAction::class, 'blog.admin');
+            $router->crud("$prefix/posts", PostCrudAction::class, 'blog.posts.admin');
             $router->crud("$prefix/categories", CategoryCrudAction::class, 'blog.category.admin');
         }
     }

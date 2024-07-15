@@ -52,7 +52,7 @@ class FormExtension extends AbstractExtension
 
         return "
         <div class=\"" . $class . "\">
-            <label for=\"name\">$label</label>
+            <label for=\"" . $key . "\">$label</label>
             {$input}
             {$error}
         </div>
@@ -94,7 +94,13 @@ class FormExtension extends AbstractExtension
             $attributes['checked'] = true;
         }
 
-        return $html . "<input type=\"checkbox\" " . $this->getHtmlFromArray($attributes) . " value=\"1\">";
+        $attributes['class'] = 'form-check-input';
+
+        return '
+            <div class="form-check">
+                ' . $html . '<input type="checkbox" ' . $this->getHtmlFromArray($attributes) . ' value="1">
+                <label class="form-check-label" for"' . $attributes['id'] . '">' . $attributes['name'] . '</label>
+            </div>';
     }
 
     private function file($attributes): string
@@ -105,7 +111,7 @@ class FormExtension extends AbstractExtension
     /** Generates a <textarea> */
     private function textarea(?string $value, array $attributes): string
     {
-        return "<textarea " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
+        return "<textarea rows='10' " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
     }
 
     /** Generates a <select> */

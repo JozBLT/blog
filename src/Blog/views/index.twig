@@ -24,30 +24,35 @@
             <div class="row">
 
                 {% for row in posts | batch(4) %}
-                    <div class="card-deck">
+                    {% set col_class = 'col-md-' ~ (12 // row|length) %}
+                    <div class="row row-cols-1 g-2">
                         {% for post in row %}
-                            <div class="card">
-                                {% if post.categoryName %}
-                                    <div class="card-header">{{ post.categoryName }}</div>
-                                {% endif %}
-                                {% if post.image %}
-                                    <img src="{{ post.thumb }}" alt="{{ post.name }}" style="width:100%;">
-                                {% endif %}
-                                <div class="card-block">
-                                    <h4 class="card-title">
-                                        <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
-                                            {{ post.name }}
+                            <div class="{{ col_class }} mb-4">
+                                <div class="card h-100 me-2">
+                                    {% if post.categoryName %}
+                                        <div class="card-header">{{ post.categoryName }}</div>
+                                    {% endif %}
+                                    {% if post.image %}
+                                        <img src="{{ post.thumb }}" class="card-img-top"
+                                             alt="{{ post.name }}" style="width:100%;">
+                                    {% endif %}
+                                    <div class="card-body d-flex flex-column">
+                                        <h4 class="card-title">
+                                            <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}">
+                                                {{ post.name }}
+                                            </a>
+                                        </h4>
+                                        <p class="card-text">
+                                            {{ post.content | excerpt | nl2br }}
+                                        </p>
+                                        <p class="text-muted mt-auto">{{ post.createdAt | ago }}</p>
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}"
+                                           class="btn btn-primary">
+                                            Voir L'article
                                         </a>
-                                    </h4>
-                                    <p class="card-text">
-                                        {{ post.content | excerpt | nl2br }}
-                                    </p>
-                                    <p class="text-muted">{{ post.createdAt | ago }}</p>
-                                </div>
-                                <div class="card-footer">
-                                    <a href="{{ path('blog.show', {slug: post.slug, id: post.id}) }}" class="btn btn-primary">
-                                        Voir L'article
-                                    </a>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
@@ -55,14 +60,20 @@
                 {% endfor %}
             </div>
 
-            {% if category %}
-                {{ paginate(posts, 'blog.category', {slug: category.slug}) }}
-            {% else %}
-                {{ paginate(posts, 'blog.index') }}
-            {% endif %}
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="navigation">
+                        {% if category %}
+                            {{ paginate(posts, 'blog.category', {slug: category.slug}) }}
+                        {% else %}
+                            {{ paginate(posts, 'blog.index') }}
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
 
         </div>
-        <div class="col-md-3">
+        <div class="col-md-3 pt-3">
             <ul class="list-group">
                 {% for c in categories %}
                     <li class="list-group-item {% if c.id == category.id %}active{% endif %}">
