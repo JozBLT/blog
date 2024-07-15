@@ -4,7 +4,7 @@ namespace Framework\Twig;
 
 use Framework\Router;
 use Pagerfanta\Pagerfanta;
-use Pagerfanta\View\TwitterBootstrap4View;
+use Pagerfanta\View\TwitterBootstrap5View;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -31,7 +31,7 @@ class PagerFantaExtension extends AbstractExtension
         array $routerParams = [],
         array $queryArgs = []
     ): string {
-        $view = new TwitterBootstrap4View();
+        $view = new TwitterBootstrap5View();
         return $view->render($paginatedResults, function (int $page) use ($route, $routerParams, $queryArgs) {
             if ($page > 1) {
                 $queryArgs['p'] = $page;

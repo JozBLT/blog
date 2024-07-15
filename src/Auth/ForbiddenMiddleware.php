@@ -37,7 +37,7 @@ class ForbiddenMiddleware implements MiddlewareInterface
         } catch (ForbiddenException $exception) {
             return $this->redirectLogin($request);
         } catch (\TypeError $error) {
-            if (strpos($error->getMessage(), \Framework\Auth\User::class) !== false) {
+            if (str_contains($error->getMessage(), \Framework\Auth\User::class)) {
                 return $this->redirectLogin($request);
             }
             throw $error;
@@ -47,7 +47,8 @@ class ForbiddenMiddleware implements MiddlewareInterface
     public function redirectLogin(ServerRequestInterface $request): ResponseInterface
     {
         $this->session->set('auth.redirect', $request->getUri()->getPath());
-        (new FlashService($this->session))->error('Vous devez posséder un compte pour accéder à cette page');
+        (new FlashService($this->session))->error('Vous devez être administrateur pour accéder à cette page');
+
         return new RedirectResponse($this->loginPath);
     }
 }

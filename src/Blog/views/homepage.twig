@@ -1,0 +1,86 @@
+{% extends 'layout.twig' %}
+
+{% block banner %}
+
+    <div class="container-fluid pt-2">
+        <div class="d-flex justify-content-center">
+            <img src="images/banner.png" alt="bannière du site" class="img-fluid" />
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
+
+    {% if flash('error') %}
+        <div class="alert alert-danger">
+            {{ flash('error') }}
+        </div>
+    {% endif %}
+
+    {% if flash('success') %}
+        <div class="alert alert-success">
+            {{ flash('success') }}
+        </div>
+    {% endif %}
+
+    <div class="d-block rounded p-4 text-center text-secondary bg-light-subtle">
+        <h1>Présentation</h1>
+    </div>
+    <div class="row pt-4 pb-4">
+        <div class="col-md-4">
+            <div class="d-block rounded p-4 bg-light-subtle">
+                <img src="images/photo.jpg" alt="Photo" class="img-fluid" id="protectedImage">
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="d-flex flex-column rounded p-4
+            justify-content-center align-items-center text-secondary bg-light-subtle h-100">
+                <div class="mb-4">
+                    <p>
+                        Développeur depuis peu, je suis actuellement en alternance avec l'école en ligne OpenClassrooms.
+                    </p>
+                    <p>
+                        Je réalise mon alternance à la Compagnie Fiduciaire.
+                        Nous développons et maintenons une application de comptabilité à destination des comptables de
+                        la société, mais aussi ceux d'entreprises tierces.
+                    </p>
+                </div>
+                <div class="text-center">
+                    <a href="pdf/cv.pdf" class="d-inline-flex focus-ring py-1 px-2 text-decoration-none border rounded-2"
+                       download="CV_Dumont_Jonathan.pdf">
+                        Télécharger mon CV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-block rounded p-4 pt-4 text-center text-secondary bg-light-subtle">
+        <h1>Languages pratiqués</h1>
+        <p class="d-inline fs-4 mx-2 text-decoration-underline">HTML</p>
+        <p class="d-inline fs-4 mx-2 text-decoration-underline">CSS</p>
+        <p class="d-inline fs-4 mx-2 text-decoration-underline">JavaScript</p>
+        <p class="d-inline fs-4 mx-2 text-decoration-underline">PHP</p>
+        <p class="d-inline fs-4 mx-2 text-decoration-underline">Sql</p>
+    </div>
+    <div class="mb-5"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const protectedImage = document.getElementById('protectedImage');
+
+            protectedImage.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            protectedImage.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+            });
+
+            protectedImage.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+
+{% endblock %}
