@@ -3,6 +3,7 @@
 namespace App\Blog\Actions;
 
 use App\Blog\Repository\PostRepository;
+use Exception;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -12,20 +13,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class PostShowAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
     use RouterAwareAction;
 
@@ -42,19 +34,20 @@ class PostShowAction
     /**
      * Display an article
      *
-     * @param ServerRequestInterface $request
-     * @return ResponseInterface|string
+     * @throws Exception
      */
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string|ResponseInterface
     {
         $slug = $request->getAttribute('slug');
         $post = $this->postRepository->findWithCategory($request->getAttribute('id'));
+
         if ($post->slug !== $slug) {
             return $this->redirect('blog.show', [
                 'slug' => $post->slug,
                 'id' => $post->id
             ]);
         }
+
         return $this->renderer->render('@blog/show', [
             'post' => $post
         ]);

@@ -3,16 +3,18 @@
 namespace App\Auth;
 
 use Framework\Database\Repository;
+use PDO;
 use Ramsey\Uuid\Uuid;
 
 class UserRepository extends Repository
 {
 
-    protected /*string */$repository = "users";
+    protected string $repository = 'users';
 
-    public function __construct(\PDO $pdo, string $entity = User::class)
+    public function __construct(PDO $pdo, string $entity = User::class)
     {
         $this->entity = $entity;
+
         parent::__construct($pdo);
     }
 

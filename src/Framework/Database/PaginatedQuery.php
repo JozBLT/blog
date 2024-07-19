@@ -3,15 +3,11 @@
 namespace Framework\Database;
 
 use Pagerfanta\Adapter\AdapterInterface;
-use PDO;
 
 class PaginatedQuery implements AdapterInterface
 {
 
-    /**
-     * @var Query
-     */
-    private $query;
+    private Query $query;
 
     public function __construct(Query $query)
     {

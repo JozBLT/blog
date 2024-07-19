@@ -73,7 +73,7 @@ class CsrfMiddleware implements MiddlewareInterface
         throw new CsrfInvalidException();
     }
 
-    private function useToken($token): void
+    private function useToken(string $token): void
     {
         $tokens = array_filter($this->session[$this->sessionKey], function ($t) use ($token) {
             return $token !== $t;
@@ -84,13 +84,15 @@ class CsrfMiddleware implements MiddlewareInterface
     private function limitTokens(): void
     {
         $tokens = $this->session[$this->sessionKey] ?? [];
+
         if (count($tokens) > $this->limit) {
             array_shift($tokens);
         }
+
         $this->session[$this->sessionKey] = $tokens;
     }
 
-    private function validSession($session): void
+    private function validSession(object $session): void
     {
         if (!is_array($session) && !$session instanceof ArrayAccess) {
             throw new TypeError('Session passed to CSRF middleware is not processable as an array');

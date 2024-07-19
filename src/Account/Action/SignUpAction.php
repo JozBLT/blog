@@ -23,6 +23,7 @@ class SignUpAction
     private Router $router;
 
     private DatabaseAuth $auth;
+
     private FlashService $flashService;
 
     public function __construct(
@@ -39,7 +40,7 @@ class SignUpAction
         $this->flashService = $flashService;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
         if ($request->getMethod() === 'GET') {
             return $this->renderer->render('@account/signup');

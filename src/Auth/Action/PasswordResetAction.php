@@ -4,6 +4,7 @@ namespace App\Auth\Action;
 
 use App\Auth\User;
 use App\Auth\UserRepository;
+use Framework\Database\NoRecordException;
 use Framework\Renderer\RendererInterface;
 use Framework\Response\RedirectResponse;
 use Framework\Router;
@@ -34,7 +35,8 @@ class PasswordResetAction
         $this->flashService = $flashService;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    /** @throws NoRecordException */
+    public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
         /** @var User $user */
         $user = $this->userRepository->find($request->getAttribute('id'));
@@ -44,7 +46,9 @@ class PasswordResetAction
             time() - $user->getPasswordResetAt()->getTimestamp() < 600
         ) {
             if ($request->getMethod() === 'GET') {
+
                 return $this->renderer->render('@auth/reset');
+
             } else {
                 $params = $request->getParsedBody();
                 $validator = (new Validator($params))
@@ -56,6 +60,7 @@ class PasswordResetAction
                     $this->flashService->success('Votre mot de passe a bien été changé');
 
                     return new RedirectResponse($this->router->generateUri('auth.login'));
+
                 } else {
                     $errors = $validator->getErrors();
 

@@ -2,7 +2,8 @@
 
 namespace Framework\Database;
 
-class NoRecordException extends \Exception
-{
+use Exception;
 
+class NoRecordException extends Exception
+{
 }

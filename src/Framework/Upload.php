@@ -9,9 +9,9 @@ use Psr\Http\Message\UploadedFileInterface;
 class Upload
 {
 
-    protected /*string */$path;
+    protected string $path;
 
-    protected $formats = [];
+    protected array $formats = [];
 
     public function __construct(?string $path = null)
     {
@@ -80,10 +80,10 @@ class Upload
             $info['filename'] . '_' . $suffix . '.' . $info['extension'];
     }
 
-    private function generateFormats(string $targetPath)
+    private function generateFormats(string $targetPath): void
     {
         foreach ($this->formats as $format => $size) {
-            $manager = new ImageManager(new Driver()); //['driver' => 'gd']
+            $manager = new ImageManager(new Driver());
             $destination = $this->getPathWithSuffix($targetPath, $format);
             [$width, $height] = $size; // $width = $size[0]; $height = $size[1]
             $manager->read($targetPath)->resize($width, $height)->save($destination);

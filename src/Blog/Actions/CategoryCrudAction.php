@@ -13,11 +13,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class CategoryCrudAction extends CrudAction
 {
 
-    protected /*string */$viewPath = "@blog/admin/categories";
+    protected string $viewPath = '@blog/admin/categories';
 
-    protected /*string */$routePrefix = "blog.category.admin";
+    protected string $routePrefix = 'blog.category.admin';
 
-    protected /*array */$acceptedParams = ['name', 'slug'];
+    protected array $acceptedParams = ['name', 'slug'];
 
     public function __construct(
         RendererInterface $renderer,

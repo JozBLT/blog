@@ -6,5 +6,5 @@ use Framework\Database\Repository;
 
 class CategoryRepository extends Repository
 {
-    protected /*string */$repository = 'categories';
+    protected string $repository = 'categories';
 }

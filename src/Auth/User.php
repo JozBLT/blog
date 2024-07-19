@@ -2,38 +2,36 @@
 
 namespace App\Auth;
 
+use DateTime;
+use Exception;
+
 class User implements \Framework\Auth\User
 {
 
-    public /*int */$id;
+    public int $id;
 
-    public /*string */$username;
+    public string $username;
 
-    public /*string */$email;
+    public string $email;
 
-    public /*string */$password;
+    public string $password;
 
-    public /*string */$passwordReset;
+    public ?string $passwordReset;
 
-    public $passwordResetAt;
+    public ?DateTime $passwordResetAt;
 
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    /**
-     * @return string[]
-     */
+    /** @return string[] */
     public function getRoles(): array
     {
         return [];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPasswordReset()
+    public function getPasswordReset(): ?string
     {
         return $this->passwordReset;
     }
@@ -41,72 +39,52 @@ class User implements \Framework\Auth\User
     /**
      * @param mixed $passwordReset
      */
-    public function setPasswordReset($passwordReset)
+    public function setPasswordReset(?string $passwordReset): void
     {
         $this->passwordReset = $passwordReset;
     }
 
-    public function setPasswordResetAt($date)
+    /** @throws Exception */
+    public function setPasswordResetAt(?string $date): void
     {
         if (is_string($date)) {
-            $this->passwordResetAt = new \DateTime($date);
+            $this->passwordResetAt = new DateTime($date);
         } else {
             $this->passwordResetAt = $date;
         }
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPasswordResetAt(): ?\DateTime
+    public function getPasswordResetAt(): ?DateTime
     {
         return $this->passwordResetAt;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @param mixed $email
-     */
-    public function setEmail($email)
+    public function setEmail(string $email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @param mixed $password
-     */
-    public function setPassword($password)
+    public function setPassword(string $password): void
     {
         $this->password = $password;
     }
 
-    /**
-     * @return mixed
-     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }

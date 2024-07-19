@@ -61,10 +61,6 @@ class Router
         $this->delete("$prefixPath/{id:\d+}", $callable, "$prefixName.delete");
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return Route|null
-     */
     public function match(ServerRequestInterface $request): ?Route
     {
         $result = $this->router->match($request);

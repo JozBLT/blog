@@ -17,31 +17,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 class App implements RequestHandlerInterface
 {
 
-    /**
-     * List of modules
-     * @var array
-     */
-    private $modules = [];
+    /** List of modules */
+    private array $modules = [];
 
-    /**
-     * @var string|array|null
-     */
-    private $definitions;
+    private string|array|null $definitions;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ?ContainerInterface $container = null;
 
-    /**
-     * @var string[]
-     */
-    private $middlewares = [];
+    /** @var string[] */
+    private array $middlewares = [];
 
-    /**
-     * @var int
-     */
-    private $index = 0;
+    private int $index = 0;
 
     public function __construct($definitions = null)
     {
@@ -56,7 +42,11 @@ class App implements RequestHandlerInterface
         return $this;
     }
 
-    /** Add a middleware */
+    /**
+     * Add a middleware
+     *
+     * @throws Exception
+     */
     public function pipe(
         string|callable|MiddlewareInterface $routePrefix,
         string|callable|MiddlewareInterface|null $middleware = null
@@ -70,18 +60,28 @@ class App implements RequestHandlerInterface
         return $this;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $this->index++;
 
         if ($this->index > 1) {
-            throw new \Exception();
+            throw new Exception();
         }
         $middleware = new CombinedMiddleware($this->getContainer(), $this->middlewares);
 
         return $middleware->process($request, $this);
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
         foreach ($this->modules as $module) {
@@ -91,6 +91,7 @@ class App implements RequestHandlerInterface
         return $this->handle($request);
     }
 
+    /** @throws Exception */
     public function getContainer(): ContainerInterface
     {
         if ($this->container === null) {
@@ -107,6 +108,7 @@ class App implements RequestHandlerInterface
             }
 
             foreach ($this->modules as $module) {
+
                 if ($module::DEFINITIONS) {
                     $builder->addDefinitions($module::DEFINITIONS);
                 }

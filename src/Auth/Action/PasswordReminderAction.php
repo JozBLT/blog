@@ -10,6 +10,7 @@ use Framework\Response\RedirectResponse;
 use Framework\Session\FlashService;
 use Framework\Validator;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class PasswordReminderAction
 {
@@ -34,7 +35,8 @@ class PasswordReminderAction
         $this->flashService = $flashService;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    /** @throws TransportExceptionInterface */
+    public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
         if ($request->getMethod() === 'GET') {
             return $this->renderer->render('@auth/reminder');
@@ -56,7 +58,8 @@ class PasswordReminderAction
                 $this->flashService->success('La procédure de reset vous a été envoyée par email');
 
                 return new RedirectResponse($request->getUri()->getPath());
-            } catch (NoRecordException $e) {
+
+            } catch (NoRecordException) {
                 $errors = ['email' => 'Aucun utilisateur ne corrsepond à cet email'];
             }
         } else {

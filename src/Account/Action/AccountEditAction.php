@@ -33,7 +33,7 @@ class AccountEditAction
         $this->userRepository = $userRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
         $user = $this->auth->getUser();
         $params = $request->getParsedBody();

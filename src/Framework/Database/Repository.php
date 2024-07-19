@@ -9,24 +9,13 @@ use stdClass;
 class Repository
 {
 
-    /**
-     * @var PDO|null
-     */
-    protected /*null|PDO */$pdo;
+    protected null|PDO $pdo;
 
-    /**
-     * Table name in database
-     *
-     * @var string
-     */
-    protected /*string */$repository;
+    /** Table name in database */
+    protected string $repository;
 
-    /**
-     * Entity to use
-     *
-     * @var string
-     */
-    protected /*string */$entity = stdClass::class;
+    /** Entity to use */
+    protected string $entity = stdClass::class;
 
     public function __construct(PDO $pdo)
     {
@@ -37,7 +26,7 @@ class Repository
     public function findList(): array
     {
         $results = $this->pdo
-            ->query("SELECT id, name FROM {$this->repository}")
+            ->query("SELECT id, name FROM $this->repository")
             ->fetchAll(PDO::FETCH_NUM);
         $list = [];
 
@@ -92,7 +81,7 @@ class Repository
     {
         $fieldQuery = $this->buildFieldQuery($params);
         $params["id"] = $id;
-        $query = $this->pdo->prepare("UPDATE {$this->repository} SET $fieldQuery WHERE id = :id");
+        $query = $this->pdo->prepare("UPDATE $this->repository SET $fieldQuery WHERE id = :id");
 
         return $query->execute($params);
     }
@@ -105,7 +94,7 @@ class Repository
             return ':' . $field;
         }, $fields));
         $fields = join(', ', $fields);
-        $query = $this->pdo->prepare("INSERT INTO {$this->repository} ($fields) VALUES ($values)");
+        $query = $this->pdo->prepare("INSERT INTO $this->repository ($fields) VALUES ($values)");
 
         return $query->execute($params);
     }
@@ -113,7 +102,7 @@ class Repository
     /** Delete a record */
     public function delete(int $id): bool
     {
-        $query = $this->pdo->prepare("DELETE FROM {$this->repository} WHERE id = ?");
+        $query = $this->pdo->prepare("DELETE FROM $this->repository WHERE id = ?");
 
         return $query->execute([$id]);
     }
@@ -125,7 +114,6 @@ class Repository
         }, array_keys($params)));
     }
 
-    /** @return mixed */
     public function getEntity(): string
     {
         return $this->entity;
@@ -139,7 +127,7 @@ class Repository
     /** Check if an element exists */
     public function exists(int $id): bool
     {
-        $query = $this->pdo->prepare("SELECT id FROM {$this->repository} WHERE id = ?");
+        $query = $this->pdo->prepare("SELECT id FROM $this->repository WHERE id = ?");
         $query->execute([$id]);
 
         return $query->fetchColumn() !== false;

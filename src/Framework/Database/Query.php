@@ -2,31 +2,34 @@
 
 namespace Framework\Database;
 
+use IteratorAggregate;
 use Pagerfanta\Pagerfanta;
+use PDO;
+use PDOStatement;
 use Traversable;
 
-class Query implements \IteratorAggregate
+class Query implements IteratorAggregate
 {
 
-    private $select;
+    private ?array $select = null;
 
-    private $from;
+    private array $from;
 
-    private $where = [];
+    private array $where = [];
 
-    private $entity;
+    private ?string $entity;
 
-    private $order;
+    private array $order;
 
-    private $limit;
+    private ?string $limit = null;
 
-    private $joins;
+    private array $joins;
 
-    private $pdo;
+    private ?PDO $pdo;
 
-    private $params = [];
+    private array $params = [];
 
-    public function __construct(?\PDO $pdo = null)
+    public function __construct(?PDO $pdo = null)
     {
         $this->pdo = $pdo;
     }
@@ -67,7 +70,7 @@ class Query implements \IteratorAggregate
         return $this;
     }
 
-    /** Adds a JOIN */
+    /** Adds a LEFT JOIN */
     public function join(string $table, string $condition, string $type = "left"): self
     {
         $this->joins[$type][] = [$table, $condition];
@@ -111,7 +114,7 @@ class Query implements \IteratorAggregate
     /** Fetch a result */
     public function fetch(): mixed
     {
-        $record = $this->execute()->fetch(\PDO::FETCH_ASSOC);
+        $record = $this->execute()->fetch(PDO::FETCH_ASSOC);
 
         if ($record === false) {
             return false;
@@ -144,7 +147,7 @@ class Query implements \IteratorAggregate
     public function fetchAll(): QueryResult
     {
         return new QueryResult(
-            $this->execute()->fetchAll(\PDO::FETCH_ASSOC),
+            $this->execute()->fetchAll(PDO::FETCH_ASSOC),
             $this->entity
         );
     }
@@ -212,7 +215,7 @@ class Query implements \IteratorAggregate
     }
 
     /** Run the query */
-    private function execute(): false|\PDOStatement
+    private function execute(): false|PDOStatement
     {
         $query = $this->__toString();
 

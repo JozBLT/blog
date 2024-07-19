@@ -59,7 +59,7 @@ class FormExtension extends AbstractExtension
         ";
     }
 
-    private function convertValue($value): string
+    private function convertValue(DateTime|string|null $value): string
     {
         if ($value instanceof DateTime) {
             return $value->format('Y-m-d H:i:s');
@@ -103,7 +103,7 @@ class FormExtension extends AbstractExtension
             </div>';
     }
 
-    private function file($attributes): string
+    private function file(array $attributes): string
     {
         return "<input type=\"file\" " . $this->getHtmlFromArray($attributes) . ">";
     }

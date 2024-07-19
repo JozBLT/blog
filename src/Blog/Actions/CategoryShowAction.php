@@ -5,26 +5,18 @@ namespace App\Blog\Actions;
 use App\Blog\Repository\CategoryRepository;
 use App\Blog\Repository\PostRepository;
 use Framework\Actions\RouterAwareAction;
+use Framework\Database\NoRecordException;
 use Framework\Renderer\RendererInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class CategoryShowAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
 
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
 
     use RouterAwareAction;
 
@@ -38,7 +30,8 @@ class CategoryShowAction
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    /** @throws NoRecordException */
+    public function __invoke(ServerRequestInterface $request): string
     {
         $params = $request->getQueryParams();
         $category = $this->categoryRepository->findBy('slug', $request->getAttribute('slug'));

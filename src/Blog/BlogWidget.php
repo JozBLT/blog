@@ -10,20 +10,11 @@ use Framework\Renderer\RendererInterface;
 class BlogWidget implements AdminWidgetInterface
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
 
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
 
     public function __construct(
         RendererInterface $renderer,

@@ -18,9 +18,9 @@ class AdminModule extends Module
         AdminTwigExtension $adminTwigExtension,
         string $prefix
     ) {
-
         $renderer->addPath('admin', __DIR__ . '/views');
         $router->get($prefix, DashboardAction::class, 'admin');
+
         if ($renderer instanceof TwigRenderer) {
             $renderer->getTwig()->addExtension($adminTwigExtension);
         }

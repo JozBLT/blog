@@ -9,9 +9,7 @@ class PHPRenderer implements RendererInterface
 
     private array $paths = [];
 
-    /**
-     * Variables globally accessible for all views
-     */
+    /** Variables globally accessible for all views */
     private array $globals = [];
 
     public function __construct(?string $defaultPath = null)
@@ -21,9 +19,7 @@ class PHPRenderer implements RendererInterface
         }
     }
 
-    /**
-     * Add new path to load views
-     */
+    /** Add new path to load views */
     public function addPath(string $namespace, ?string $path = null): void
     {
         if (is_null($path)) {
@@ -54,9 +50,7 @@ class PHPRenderer implements RendererInterface
         return ob_get_clean();
     }
 
-    /**
-     * Add global variables on every views
-     */
+    /** Add global variables on every views */
     public function addGlobal(string $key, mixed $value): void
     {
         $this->globals[$key] = $value;
@@ -75,6 +69,7 @@ class PHPRenderer implements RendererInterface
     private function replaceNamespace(string $view): string
     {
         $namespace = $this->getNamespace($view);
+
         return str_replace('@' . $namespace, $this->paths[$namespace], $view);
     }
 }

@@ -17,6 +17,9 @@ use Framework\Middleware\RouterMiddleware;
 use Framework\Middleware\TrailingSlashMiddleware;
 use Franzl\Middleware\Whoops\WhoopsMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use function Http\Response\send;
 
 chdir(dirname(__DIR__));
@@ -30,17 +33,24 @@ $app =  (new App('config/config.php'))
     ->addModule(AuthModule::class)
     ->addModule(AccountModule::class);
 
-$container = $app->getContainer();
-$app->pipe(WhoopsMiddleware::class)
-    ->pipe(TrailingSlashMiddleware::class)
-    ->pipe(ForbiddenMiddleware::class)
-    ->pipe($container->get('admin.prefix'), $container->get(RoleMiddlewareFactory::class)->makeForRole('admin'))
-    ->pipe(MethodMiddleware::class)
-    ->pipe(RendererRequestMiddleware::class)
-    ->pipe(CsrfMiddleware::class)
-    ->pipe(RouterMiddleware::class)
-    ->pipe(DispatcherMiddleware::class)
-    ->pipe(NotFoundMiddleware::class);
+try {
+    $container = $app->getContainer();
+} catch (Exception $e) {
+}
+try {
+    /** @var ContainerInterface $container */
+    $app->pipe(WhoopsMiddleware::class)
+        ->pipe(TrailingSlashMiddleware::class)
+        ->pipe(ForbiddenMiddleware::class)
+        ->pipe($container->get('admin.prefix'), $container->get(RoleMiddlewareFactory::class)->makeForRole('admin'))
+        ->pipe(MethodMiddleware::class)
+        ->pipe(RendererRequestMiddleware::class)
+        ->pipe(CsrfMiddleware::class)
+        ->pipe(RouterMiddleware::class)
+        ->pipe(DispatcherMiddleware::class)
+        ->pipe(NotFoundMiddleware::class);
+} catch (NotFoundExceptionInterface|ContainerExceptionInterface|Exception $e) {
+}
 
 if (php_sapi_name() !== "cli") {
     $response = $app->run(ServerRequest::fromGlobals());

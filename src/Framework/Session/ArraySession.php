@@ -5,9 +5,9 @@ namespace Framework\Session;
 class ArraySession implements SessionInterface
 {
 
-    private $session = [];
+    private array $session = [];
 
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         if (array_key_exists($key, $this->session)) {
             return $this->session[$key];
@@ -16,7 +16,7 @@ class ArraySession implements SessionInterface
         return $default;
     }
 
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         $this->session[$key] = $value;
     }

@@ -5,11 +5,11 @@ namespace App\Account;
 class User extends \App\Auth\User
 {
 
-    private /*string */$firstname;
+    private ?string $firstname;
 
-    private /*string */$lastname;
+    private ?string $lastname;
 
-    private /*string */$role;
+    private string $role;
 
     public function getRoles(): array
     {
@@ -36,17 +36,11 @@ class User extends \App\Auth\User
         $this->lastname = $lastname;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getRole()
+    public function getRole(): string
     {
         return $this->role;
     }
 
-    /**
-     * @param mixed $role
-     */
     public function setRole($role): void
     {
         $this->role = $role;

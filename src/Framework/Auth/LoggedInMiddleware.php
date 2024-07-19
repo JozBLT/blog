@@ -14,7 +14,7 @@ class LoggedInMiddleware implements MiddlewareInterface
     /**
      * @var Auth
      */
-    private $auth;
+    private Auth $auth;
 
     public function __construct(Auth $auth)
     {

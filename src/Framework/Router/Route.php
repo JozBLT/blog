@@ -11,7 +11,7 @@ class Route
 
     private string $name;
 
-    private mixed $callback; //type callable?
+    private mixed $callback;
 
     private array $parameters;
 
@@ -34,6 +34,7 @@ class Route
 
     /**
      * Retrieve URL's parameters
+     *
      * @return string[]
      */
     public function getParams(): array

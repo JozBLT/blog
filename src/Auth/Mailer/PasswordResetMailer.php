@@ -3,6 +3,7 @@
 namespace App\Auth\Mailer;
 
 use Framework\Renderer\RendererInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 
@@ -22,7 +23,8 @@ class PasswordResetMailer
         $this->from = $from;
     }
 
-    public function send(string $to, array $params)
+    /** @throws TransportExceptionInterface */
+    public function send(string $to, array $params): void
     {
         $email = (new Email())
             ->subject('Réinitialisation du mot de passe')

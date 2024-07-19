@@ -3,49 +3,52 @@
 namespace App\Blog\Entity;
 
 use DateTime;
+use Exception;
 
 class Post
 {
 
-    public $id;
+    public int $id;
 
-    public $name;
+    public ?string $name = null;
 
-    public $slug;
+    public ?string $slug = null;
 
-    public $content;
+    public ?string $content = null;
 
-    public $createdAt;
+    public DateTime $createdAt;
 
-    public $updatedAt;
+    public DateTime $updatedAt;
 
-    public $image;
+    public ?string $image = null;
 
-    public function setCreatedAt($datetime)
+    /** @throws Exception */
+    public function setCreatedAt(DateTime|string $datetime): void
     {
         if (is_string($datetime)) {
-            $this->createdAt = new \DateTime($datetime);
+            $this->createdAt = new DateTime($datetime);
         } else {
             $this->createdAt = $datetime;
         }
     }
 
-    public function setUpdatedAt($datetime)
+    /** @throws Exception */
+    public function setUpdatedAt(DateTime|string $datetime): void
     {
         if (is_string($datetime)) {
-            $this->updatedAt = new \DateTime($datetime);
+            $this->updatedAt = new DateTime($datetime);
         } else {
             $this->updatedAt = $datetime;
         }
     }
 
-    public function getThumb()
+    public function getThumb(): string
     {
         ['filename' => $fileName, 'extension' => $extension] = pathinfo($this->image);
         return '/uploads/posts/' . $fileName . '_thumb.' . $extension;
     }
 
-    public function getImageUrl()
+    public function getImageUrl(): string
     {
         return '/uploads/posts/' . $this->image;
     }
