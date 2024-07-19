@@ -9,47 +9,32 @@ namespace Framework\Router;
 class Route
 {
 
-    /**
-     * @var string
-     */
     private string $name;
 
-    /**
-     * @var callable
-     */
-    private $callback;
+    private mixed $callback;
 
-    /**
-     * @var array
-     */
     private array $parameters;
 
-    public function __construct(string $name, callable $callback, array $parameters)
+    public function __construct(string $name, callable|string|array $callback, array $parameters)
     {
         $this->name = $name;
         $this->callback = $callback;
         $this->parameters = $parameters;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     *
-     * @return callable
-     */
-    public function getCallback(): callable
+    public function getCallback(): callable|string|array
     {
         return $this->callback;
     }
 
     /**
      * Retrieve URL's parameters
+     *
      * @return string[]
      */
     public function getParams(): array

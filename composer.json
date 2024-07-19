@@ -15,12 +15,25 @@
     ],
     "require-dev": {
         "phpunit/phpunit": "*",
-        "squizlabs/php_codesniffer": "^3.9"
+        "squizlabs/php_codesniffer": "^3.9",
+        "robmorgan/phinx": "^0.16.0",
+        "fakerphp/faker": "^1.23",
+        "phpspec/prophecy-phpunit": "^2.2",
+        "dms/phpunit-arraysubset-asserts": "^0.5.0"
     },
     "require": {
         "nesbot/carbon": "*",
         "guzzlehttp/psr7": "^2.6",
         "http-interop/response-sender": "^1.0",
-        "altorouter/altorouter": "^2.0"
+        "twig/twig": "^3.9",
+        "php-di/php-di": "^7.0",
+        "ext-pdo": "*",
+        "pagerfanta/pagerfanta": "^4.5",
+        "franzl/whoops-middleware": "^2.0",
+        "intervention/image": "^3.7",
+        "mezzio/mezzio-fastroute": "^3.11",
+        "symfony/mailer": "^7.1",
+        "symfony/twig-bridge": "^7.1",
+        "ramsey/uuid": "^4.7"
     }
 }

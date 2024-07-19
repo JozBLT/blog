@@ -2,61 +2,126 @@
 
 namespace Framework;
 
-use GuzzleHttp\Psr7\Response;
+use DI\ContainerBuilder;
+use Exception;
+use Framework\Middleware\CombinedMiddleware;
+use Framework\Middleware\RoutePrefixedMiddleware;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
-class App
+class App implements RequestHandlerInterface
 {
 
-    /**
-     * List of modules
-     * @var array
-     */
+    /** List of modules */
     private array $modules = [];
 
-    /**
-     * Router
-     * @var Router
-     */
-    private Router $router;
+    private string|array|null $definitions;
 
-    /**
-     * App constructor
-     * @param string[] $modules Liste des modules à charger
-     */
-    public function __construct(array $modules = [])
+    private ?ContainerInterface $container = null;
+
+    /** @var string[] */
+    private array $middlewares = [];
+
+    private int $index = 0;
+
+    public function __construct($definitions = null)
     {
-        $this->router = new Router();
-        foreach ($modules as $module) {
-            $this->modules[] = new $module($this->router);
-        }
+        $this->definitions = $definitions;
     }
 
+    /** Add a module to the app */
+    public function addModule(string $module): self
+    {
+        $this->modules[] = $module;
+
+        return $this;
+    }
+
+    /**
+     * Add a middleware
+     *
+     * @throws Exception
+     */
+    public function pipe(
+        string|callable|MiddlewareInterface $routePrefix,
+        string|callable|MiddlewareInterface|null $middleware = null
+    ): self {
+        if ($middleware === null) {
+            $this->middlewares[] = $routePrefix;
+        } else {
+            $this->middlewares[] = new RoutePrefixedMiddleware($this->getContainer(), $routePrefix, $middleware);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        $this->index++;
+
+        if ($this->index > 1) {
+            throw new Exception();
+        }
+        $middleware = new CombinedMiddleware($this->getContainer(), $this->middlewares);
+
+        return $middleware->process($request, $this);
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
     public function run(ServerRequestInterface $request): ResponseInterface
     {
-        //redirect if '/' at the end of url
-        $uri = $request->getUri()->getPath();
-        if (!empty($uri) && $uri[-1] === "/") {
-            return (new Response())
-                ->withStatus(301)
-                ->withHeader('Location', substr($uri, 0, -1));
+        foreach ($this->modules as $module) {
+            $this->getContainer()->get($module);
         }
-        $route = $this->router->match($request);
-        if (is_null($route)) {
-            return new Response(404, [], '<h1>Erreur 404</h1>');
+
+        return $this->handle($request);
+    }
+
+    /** @throws Exception */
+    public function getContainer(): ContainerInterface
+    {
+        if ($this->container === null) {
+            $builder = new ContainerBuilder();
+            $env = getenv('ENV') ?: 'production';
+
+            if ($env === 'production') {
+                $builder->enableCompilation(__DIR__ . '/tmp');
+                $builder->writeProxiesToFile(true, __DIR__ . '/tmp/proxies');
+            }
+
+            if ($this->definitions) {
+                $builder->addDefinitions($this->definitions);
+            }
+
+            foreach ($this->modules as $module) {
+
+                if ($module::DEFINITIONS) {
+                    $builder->addDefinitions($module::DEFINITIONS);
+                }
+            }
+
+            $this->container = $builder->build();
         }
-        $params = $route->getParams();
-        $request = array_reduce(array_keys($params), function ($request, $key) use ($params) {
-            return $request->withAttribute($key, $params[$key]);
-        }, $request);
-        $response = call_user_func_array($route->getCallback(), [$request]);
-        if (is_string($response)) {
-            return new Response(200, [], $response);
-        } elseif ($response instanceof ResponseInterface) {
-            return $response;
-        } else {
-            throw new \Exception('The response is not a string or an instance of ResponseInterface');
-        }
+
+        return $this->container;
+    }
+
+    public function getModules(): array
+    {
+        return $this->modules;
     }
 }
