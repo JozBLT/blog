@@ -7,15 +7,12 @@ use Framework\Renderer\RendererInterface;
 class DashboardAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
     /**
      * @var AdminWidgetInterface[]
      */
-    private $widgets;
+    private array $widgets;
 
     public function __construct(RendererInterface $renderer, array $widgets)
     {
@@ -23,11 +20,12 @@ class DashboardAction
         $this->widgets = $widgets;
     }
 
-    public function __invoke()
+    public function __invoke(): ?string
     {
         $widgets = array_reduce($this->widgets, function (string $html, AdminWidgetInterface $widget) {
             return $html . $widget->render();
         }, '');
+
         return $this->renderer->render('@admin/dashboard', compact('widgets'));
     }
 }

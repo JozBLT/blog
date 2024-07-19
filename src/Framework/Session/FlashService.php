@@ -9,7 +9,7 @@ class FlashService
 
     private string $sessionKey = 'flash';
 
-    private $messages;
+    private array $messages = [];
 
     public function __construct(SessionInterface $session)
     {
@@ -32,14 +32,11 @@ class FlashService
 
     public function get(string $type): ?string
     {
-        if (is_null($this->messages)) {
+        if ($this->messages === []) {
             $this->messages = $this->session->get($this->sessionKey, []);
             $this->session->delete($this->sessionKey);
         }
-        if (array_key_exists($type, $this->messages)) {
-            return $this->messages[$type];
-        }
 
-        return null;
+        return $this->messages[$type] ?? null;
     }
 }

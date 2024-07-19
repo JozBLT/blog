@@ -14,7 +14,6 @@ class CsrfExtension extends AbstractExtension
 
     public function __construct(CsrfMiddleware $csrfMiddleware)
     {
-
         $this->csrfMiddleware = $csrfMiddleware;
     }
 

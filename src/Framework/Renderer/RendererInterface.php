@@ -4,9 +4,8 @@ namespace Framework\Renderer;
 
 interface RendererInterface
 {
-    /**
-     * Add new path to change views
-     */
+
+    /** Add new path to change views */
     public function addPath(string $namespace, ?string $path = null): void;
 
     /**
@@ -17,8 +16,6 @@ interface RendererInterface
      */
     public function render(string $view, array $params = []): string;
 
-    /**
-     * Add global variables on every views
-     */
+    /** Add global variables on every views */
     public function addGlobal(string $key, mixed $value): void;
 }

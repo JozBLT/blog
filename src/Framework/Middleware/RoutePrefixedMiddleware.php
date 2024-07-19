@@ -14,12 +14,13 @@ class RoutePrefixedMiddleware implements MiddlewareInterface
 {
 
     private ContainerInterface $container;
+
     private string $prefix;
+
     private string|MiddlewareInterface $middleware;
 
     public function __construct(ContainerInterface $container, string $prefix, $middleware)
     {
-
         $this->container = $container;
         $this->prefix = $prefix;
         $this->middleware = $middleware;
@@ -34,6 +35,7 @@ class RoutePrefixedMiddleware implements MiddlewareInterface
         $path = $request->getUri()->getPath();
 
         if (str_starts_with($path, $this->prefix)) {
+
             if (is_string($this->middleware)) {
                 return $this->container->get($this->middleware)->process($request, $handler);
             } else {

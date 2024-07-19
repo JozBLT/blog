@@ -19,7 +19,7 @@ class AccountAction
         $this->auth = $auth;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string
     {
         $user = $this->auth->getUser();
 

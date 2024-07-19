@@ -12,12 +12,16 @@
 
     <form action="" method="post">
         {{ csrf_input() }}
-        {{ field('firstname', user.firstname, 'Prénom') }}
-        {{ field('lastname', user.lastname, 'Nom') }}
-        <h2>Changer de mot de passe</h2>
-        <p>Laissez vide pour ne rien changer</p>
-        {{ field('password', null, 'Mot de passe', {type: 'password'}) }}
-        {{ field('password_confirm', null, 'Confirmez le mot de passe', {type: 'password'}) }}
+        <div class="row">
+            {{ field('firstname', user.firstname, 'Prénom') }}
+            {{ field('lastname', user.lastname, 'Nom') }}
+        </div>
+        <div class="row">
+            <h2>Changer de mot de passe</h2>
+            <p>(Laissez vide pour ne rien changer)</p>
+            {{ field('password', null, 'Mot de passe', {type: 'password'}) }}
+            {{ field('password_confirm', null, 'Confirmez le mot de passe', {type: 'password'}) }}
+        </div>
         <button class="btn btn-primary mt-2">Modifier mes informations</button>
     </form>
 

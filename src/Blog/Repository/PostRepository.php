@@ -9,9 +9,9 @@ use Framework\Database\Repository;
 class PostRepository extends Repository
 {
 
-    protected /*?string */$entity = Post::class;
+    protected string $entity = Post::class;
 
-    protected /*string */$repository = 'posts';
+    protected string $repository = 'posts';
 
     public function findAll(): Query
     {

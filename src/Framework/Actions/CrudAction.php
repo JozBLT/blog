@@ -15,48 +15,25 @@ use Psr\Http\Message\ServerRequestInterface;
 class CrudAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
-    /**
-     * @var Router
-     */
-    private $router;
+    private Router $router;
 
-    /**
-     * @var Repository
-     */
-    protected $repository;
+    protected Repository $repository;
 
-    /**
-     * @var FlashService
-     */
-    private $flash;
+    private FlashService $flash;
 
-    /**
-     * @var string
-     */
-    protected $viewPath;
+    protected string $viewPath;
 
-    /**
-     * @var string
-     */
-    protected $routePrefix;
+    protected string $routePrefix;
 
-    /**
-     * @var string
-     */
-    protected $messages = [
+    /** @var string[] */
+    protected array $messages = [
         'create' => "L'élément a bien été créé",
         'edit'   => "L'élément a bien été modifié"
     ];
 
-    /**
-     * @var array
-     */
-    protected $acceptedParams = [];
+    protected array $acceptedParams = [];
 
     use RouterAwareAction;
 
@@ -73,7 +50,7 @@ class CrudAction
     }
 
     /** @throws Exception */
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string|ResponseInterface
     {
         $this->renderer->addGlobal('viewPath', $this->viewPath);
         $this->renderer->addGlobal('routePrefix', $this->routePrefix);
@@ -159,7 +136,7 @@ class CrudAction
     }
 
     /** Filters the parameters received by the request */
-    protected function getParams(ServerRequestInterface $request, $post): array
+    protected function getParams(ServerRequestInterface $request, object $item): array
     {
         return array_filter(array_merge($request->getParsedBody(), $request->getUploadedFiles()), function ($key) {
             return in_array($key, $this->acceptedParams);
@@ -167,15 +144,16 @@ class CrudAction
     }
 
     /** Generates a validator for data validation */
-    protected function getValidator(ServerRequestInterface $request)
+    protected function getValidator(ServerRequestInterface $request): Validator
     {
         return new Validator(array_merge($request->getParsedBody(), $request->getUploadedFiles()));
     }
 
     /** Generates a new entity for the 'create' action */
-    protected function getNewEntity()
+    protected function getNewEntity(): mixed
     {
-        return new \stdClass();
+        $entity = $this->repository->getEntity();
+        return new $entity();
     }
 
     /** Processes parameters to send to the view */

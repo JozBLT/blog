@@ -3,7 +3,6 @@
 namespace App\Auth\Action;
 
 use App\Auth\DatabaseAuth;
-use Framework\Renderer\RendererInterface;
 use Framework\Response\RedirectResponse;
 use Framework\Session\FlashService;
 use Psr\Http\Message\ServerRequestInterface;
@@ -11,27 +10,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class LogoutAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
-    /**
-     * @var DatabaseAuth
-     */
-    private $auth;
-    /**
-     * @var FlashService
-     */
-    private $flashService;
+    private DatabaseAuth $auth;
 
-    public function __construct(RendererInterface $renderer, DatabaseAuth $auth, FlashService $flashService)
+    private FlashService $flashService;
+
+    public function __construct(DatabaseAuth $auth, FlashService $flashService)
     {
-        $this->renderer = $renderer;
         $this->auth = $auth;
         $this->flashService = $flashService;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): RedirectResponse
     {
         $this->auth->logout();
         $this->flashService->success('Vous êtes bien déconnecté');

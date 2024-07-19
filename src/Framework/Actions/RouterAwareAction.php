@@ -16,11 +16,13 @@ trait RouterAwareAction
 
     /**
      * Returns a response of redirection
+     *
      * @throws Exception
      */
     public function redirect(string $path, array $params = []): ResponseInterface
     {
         $redirectUri = $this->router->generateUri($path, $params);
+
         return (new Response())
             ->withStatus(301)
             ->withHeader('Location', $redirectUri);

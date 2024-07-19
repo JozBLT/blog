@@ -32,10 +32,13 @@ class PagerFantaExtension extends AbstractExtension
         array $queryArgs = []
     ): string {
         $view = new TwitterBootstrap5View();
+
         return $view->render($paginatedResults, function (int $page) use ($route, $routerParams, $queryArgs) {
+
             if ($page > 1) {
                 $queryArgs['p'] = $page;
             }
+
             return $this->router->generateUri($route, $routerParams, $queryArgs);
         });
     }

@@ -8,14 +8,15 @@ use Twig\TwigFunction;
 class DemoExtension extends AbstractExtension
 {
 
-    public function getFunctions()
+    /** @return TwigFunction[] */
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('demo', [$this, 'demo'])
         ];
     }
 
-    public function demo()
+    public function demo(): string
     {
         return 'Hey';
     }

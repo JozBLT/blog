@@ -5,8 +5,9 @@ namespace Framework\Validator;
 class ValidationError
 {
 
-    private $key;
-    private $rule;
+    private string $key;
+
+    private string $rule;
 
     /** @var string[] */
     private array $messages = [
@@ -35,10 +36,10 @@ class ValidationError
         $this->attributes = $attributes;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         if (!array_key_exists($this->rule, $this->messages)) {
-            return "le champs {$this->key} ne correspond pas à la règle {$this->rule}";
+            return "le champs $this->key ne correspond pas à la règle $this->rule";
         } else {
             $params = array_merge([$this->messages[$this->rule], $this->key], $this->attributes);
 

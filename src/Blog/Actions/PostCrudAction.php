@@ -6,6 +6,7 @@ use App\Blog\Entity\Post;
 use App\Blog\PostUpload;
 use App\Blog\Repository\CategoryRepository;
 use App\Blog\Repository\PostRepository;
+use DateTime;
 use Framework\Actions\CrudAction;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
@@ -16,19 +17,13 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class PostCrudAction extends CrudAction
 {
-    protected /*string */$viewPath = "@blog/admin/posts";
+    protected string $viewPath = '@blog/admin/posts';
 
-    protected /*string */$routePrefix = "blog.posts.admin";
+    protected string $routePrefix = 'blog.posts.admin';
 
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
 
-    /**
-     * @var PostUpload
-     */
-    private $postUpload;
+    private PostUpload $postUpload;
 
     public function __construct(
         RendererInterface $renderer,
@@ -58,23 +53,18 @@ class PostCrudAction extends CrudAction
         return $params;
     }
 
-    protected function getNewEntity()
+    protected function getNewEntity(): Post
     {
         $post = new Post();
-        $post->created_at = new \DateTime();
+        $post->createdAt = new DateTime();
 
         return $post;
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @param Post $post
-     * @return array
-     */
-    protected function getParams(ServerRequestInterface $request, $post): array
+    protected function getParams(ServerRequestInterface $request, object $item): array
     {
         $params = array_merge($request->getParsedBody(), $request->getUploadedFiles());
-        $image = $this->postUpload->upload($params['image'], $post->image);
+        $image = $this->postUpload->upload($params['image'], $item->image);
 
         if ($image) {
             $params['image'] = $image;

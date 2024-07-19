@@ -24,6 +24,7 @@ class QueryResult implements ArrayAccess, Iterator
     public function get(int $index): mixed
     {
         if ($this->entity) {
+
             if (!isset($this->hydratedRecords[$index])) {
                 $this->hydratedRecords[$index] = Hydrator::hydrate($this->records[$index], $this->entity);
             }

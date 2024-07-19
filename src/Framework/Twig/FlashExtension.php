@@ -13,7 +13,6 @@ class FlashExtension extends AbstractExtension
 
     public function __construct(FlashService $flashService)
     {
-
         $this->flashService = $flashService;
     }
 
@@ -27,7 +26,7 @@ class FlashExtension extends AbstractExtension
         ];
     }
 
-    public function getFlash($type): ?string
+    public function getFlash(string $type): ?string
     {
         return $this->flashService->get($type);
     }

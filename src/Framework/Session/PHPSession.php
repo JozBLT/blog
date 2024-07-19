@@ -2,7 +2,9 @@
 
 namespace Framework\Session;
 
-class PHPSession implements SessionInterface, \ArrayAccess
+use ArrayAccess;
+
+class PHPSession implements SessionInterface, ArrayAccess
 {
 
     /** Ensures that the Session is started */
@@ -14,9 +16,10 @@ class PHPSession implements SessionInterface, \ArrayAccess
     }
 
     /** Retrieves information in Session */
-    public function get(string $key, $default = null): mixed
+    public function get(string $key, mixed $default = null): mixed
     {
         $this->ensureStarted();
+
         if (array_key_exists($key, $_SESSION)) {
             return $_SESSION[$key];
         }
@@ -25,7 +28,7 @@ class PHPSession implements SessionInterface, \ArrayAccess
     }
 
     /** Add information in Session */
-    public function set(string $key, $value): void
+    public function set(string $key, mixed $value): void
     {
         $this->ensureStarted();
         $_SESSION[$key] = $value;
@@ -38,10 +41,11 @@ class PHPSession implements SessionInterface, \ArrayAccess
         unset($_SESSION[$key]);
     }
 
-    /** Checks hether an offset exists*/
+    /** Checks whether an offset exists */
     public function offsetExists(mixed $offset): bool
     {
         $this->ensureStarted();
+
         return array_key_exists($offset, $_SESSION);
     }
 

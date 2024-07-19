@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use Framework\Auth\ForbiddenException;
+use Framework\Auth\User;
 use Framework\Response\RedirectResponse;
 use Framework\Session\FlashService;
 use Framework\Session\SessionInterface;
@@ -10,19 +11,14 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use TypeError;
 
 class ForbiddenMiddleware implements MiddlewareInterface
 {
 
-    /**
-     * @var string
-     */
-    private $loginPath;
+    private string $loginPath;
 
-    /**
-     * @var SessionInterface
-     */
-    private $session;
+    private SessionInterface $session;
 
     public function __construct(string $loginPath, SessionInterface $session)
     {
@@ -34,10 +30,10 @@ class ForbiddenMiddleware implements MiddlewareInterface
     {
         try {
             return $handler->handle($request);
-        } catch (ForbiddenException $exception) {
+        } catch (ForbiddenException) {
             return $this->redirectLogin($request);
-        } catch (\TypeError $error) {
-            if (str_contains($error->getMessage(), \Framework\Auth\User::class)) {
+        } catch (TypeError $error) {
+            if (str_contains($error->getMessage(), User::class)) {
                 return $this->redirectLogin($request);
             }
             throw $error;

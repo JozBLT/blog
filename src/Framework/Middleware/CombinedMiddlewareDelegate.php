@@ -3,7 +3,9 @@
 namespace Framework\Middleware;
 
 use GuzzleHttp\Psr7\Response;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,22 +17,13 @@ class CombinedMiddlewareDelegate implements RequestHandlerInterface
     /**
      * @var string[]
      */
-    private $middlewares = [];
+    private array $middlewares;
 
-    /**
-     * @var int
-     */
-    private $index = 0;
+    private int $index = 0;
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private ContainerInterface $container;
 
-    /**
-     * @var RequestHandlerInterface
-     */
-    private $handler;
+    private RequestHandlerInterface $handler;
 
     public function __construct(ContainerInterface $container, array $middlewares, RequestHandlerInterface $handler)
     {
@@ -39,6 +32,10 @@ class CombinedMiddlewareDelegate implements RequestHandlerInterface
         $this->handler = $handler;
     }
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         $middleware = $this->getMiddleware();
@@ -59,17 +56,20 @@ class CombinedMiddlewareDelegate implements RequestHandlerInterface
     }
 
     /**
-     * @return object
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    private function getMiddleware()
+    private function getMiddleware(): mixed
     {
         if (array_key_exists($this->index, $this->middlewares)) {
+
             if (is_string($this->middlewares[$this->index])) {
                 $middleware = $this->container->get($this->middlewares[$this->index]);
             } else {
                 $middleware = $this->middlewares[$this->index];
             }
             $this->index++;
+
             return $middleware;
         }
 

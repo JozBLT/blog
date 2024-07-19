@@ -11,6 +11,7 @@ use Twig\Loader\FilesystemLoader;
 
 class TwigRendererFactory
 {
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -26,11 +27,14 @@ class TwigRendererFactory
             'auto_reload' => $debug
         ]);
         $twig->addExtension(new DebugExtension());
+
         if ($container->has('twig.extensions')) {
+
             foreach ($container->get('twig.extensions') as $extension) {
                 $twig->addExtension($extension);
             }
         }
+
         return new TwigRenderer($twig);
     }
 }

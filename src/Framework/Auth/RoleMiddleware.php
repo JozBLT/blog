@@ -11,14 +11,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 class RoleMiddleware implements MiddlewareInterface
 {
 
-    /**
-     * @var Auth
-     */
     private Auth $auth;
 
-    /**
-     * @var string
-     */
     private string $role;
 
     public function __construct(Auth $auth, string $role)
@@ -27,9 +21,7 @@ class RoleMiddleware implements MiddlewareInterface
         $this->role = $role;
     }
 
-    /**
-     * @throws ForbiddenException
-     */
+    /** @throws ForbiddenException */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $user = $this->auth->getUser();

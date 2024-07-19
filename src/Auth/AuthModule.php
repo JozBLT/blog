@@ -10,14 +10,23 @@ use App\Auth\Action\PasswordResetAction;
 use Framework\Module;
 use Framework\Renderer\RendererInterface;
 use Framework\Router;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class AuthModule extends Module
 {
+
     const DEFINITIONS = __DIR__ . '/config.php';
+
     const MIGRATIONS  = __DIR__ . '/Database/migrations';
+
     const SEEDS  = __DIR__ . '/Database/seeds';
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __construct(ContainerInterface $container, Router $router, RendererInterface $renderer)
     {
         $renderer->addPath('auth', __DIR__ . '/views');

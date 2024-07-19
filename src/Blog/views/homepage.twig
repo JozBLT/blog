@@ -2,16 +2,6 @@
 
 {% block banner %}
 
-    <div class="container-fluid pt-2">
-        <div class="d-flex justify-content-center">
-            <img src="images/banner.png" alt="bannière du site" class="img-fluid" />
-        </div>
-    </div>
-
-{% endblock %}
-
-{% block body %}
-
     {% if flash('error') %}
         <div class="alert alert-danger">
             {{ flash('error') }}
@@ -23,6 +13,16 @@
             {{ flash('success') }}
         </div>
     {% endif %}
+
+    <div class="container-fluid pt-2">
+        <div class="d-flex justify-content-center">
+            <img src="images/banner.png" alt="bannière du site" class="img-fluid" />
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block body %}
 
     <div class="d-block rounded p-4 text-center text-secondary bg-light-subtle">
         <h1>Présentation</h1>

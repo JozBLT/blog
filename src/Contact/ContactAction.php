@@ -7,6 +7,7 @@ use Framework\Response\RedirectResponse;
 use Framework\Session\FlashService;
 use Framework\Validator;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 
@@ -33,6 +34,7 @@ class ContactAction
         $this->mailer = $mailer;
     }
 
+    /** @throws TransportExceptionInterface */
     public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
         if ($request->getMethod() === 'GET') {
@@ -56,6 +58,7 @@ class ContactAction
             $this->mailer->send($email);
 
             return new RedirectResponse((string)$request->getUri());
+
         } else {
             $this->flashService->error('Merci de corriger vos erreur');
             $errors = $validator->getErrors();

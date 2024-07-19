@@ -8,12 +8,9 @@ use Twig\TwigFunction;
 class AdminTwigExtension extends AbstractExtension
 {
 
-    /**
-     * @var array
-     */
-    private $widgets;
+    private ?array $widgets;
 
-    public function __construct(array $widgets)
+    public function __construct(?array $widgets)
     {
         $this->widgets = $widgets;
     }
@@ -25,7 +22,7 @@ class AdminTwigExtension extends AbstractExtension
         ];
     }
 
-    public function renderMenu(): string
+    public function renderMenu(): ?string
     {
         return array_reduce($this->widgets, function (string $html, AdminWidgetInterface $widget) {
             return $html . $widget->renderMenu();

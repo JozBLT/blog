@@ -6,7 +6,7 @@ class Hydrator
 {
 
     /** Transform an array into an object using setters */
-    public static function hydrate(array $array, $object): mixed
+    public static function hydrate(array $array, string|object $object): mixed
     {
         if (is_string($object)) {
             $instance = new $object();

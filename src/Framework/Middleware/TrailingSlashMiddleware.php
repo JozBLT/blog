@@ -14,6 +14,7 @@ class TrailingSlashMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $uri = $request->getUri()->getPath();
+
         if ($uri !== '/' && !empty($uri) && $uri[-1] === "/") {
             return (new Response())
                 ->withStatus(301)

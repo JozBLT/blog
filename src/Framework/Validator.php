@@ -2,27 +2,25 @@
 
 namespace Framework;
 
+use DateTime;
 use Framework\Database\Repository;
 use Framework\Validator\ValidationError;
+use PDO;
 use Psr\Http\Message\UploadedFileInterface;
 
 class Validator
 {
+
     private const MIME_TYPES = [
         'jpg' => 'image/jpeg',
         'png' => 'image/png',
         'pdf' => 'application/pdf'
     ];
 
-    /**
-     * @var array
-     */
-    private $params;
+    private array $params;
 
-    /**
-     * @var string[]
-     */
-    private $errors = [];
+    /** @var string[] */
+    private array $errors = [];
 
     public function __construct(array $params)
     {
@@ -32,7 +30,7 @@ class Validator
     /**
      * Check that fields are present in the array
      *
-     * @param string[] ...$keys
+     * @param string ...$keys
      */
     public function required(string ...$keys): self
     {
@@ -48,14 +46,14 @@ class Validator
     /**
      * Check that the field is not empty
      *
-     * @param string[] ...$keys
+     * @param string ...$keys
      */
     public function notEmpty(string ...$keys): self
     {
         foreach ($keys as $key) {
             $value = $this->getValue($key);
 
-            if (is_null($value) || empty($value)) {
+            if (empty($value)) {
                 $this->addError($key, 'empty');
             }
         }
@@ -107,8 +105,8 @@ class Validator
     public function dateTime(string $key, string $format = "Y-m-d H:i:s"): self
     {
         $value = $this->getValue($key);
-        $date = \DateTime::createFromFormat($format, $value);
-        $errors = \DateTime::getLastErrors();
+        $date = DateTime::createFromFormat($format, $value);
+        $errors = DateTime::getLastErrors();
 
         if ($date === false || ($errors !== false && ($errors['error_count'] > 0 || $errors['warning_count'] > 0))) {
             $this->addError($key, 'datetime', [$format]);
@@ -118,7 +116,7 @@ class Validator
     }
 
     /** Check if key exists in repository */
-    public function exists(string $key, string $repository, \PDO $pdo): self
+    public function exists(string $key, string $repository, PDO $pdo): self
     {
         $value = $this->getValue($key);
         $statement = $pdo->prepare("SELECT id FROM $repository WHERE id = ?");
@@ -132,7 +130,7 @@ class Validator
     }
 
     /** Check if key is unique */
-    public function unique(string $key, string|Repository $repository, ?\PDO $pdo = null, ?int $exclude = null): self
+    public function unique(string $key, string|Repository $repository, ?PDO $pdo = null, ?int $exclude = null): self
     {
         if ($repository instanceof Repository) {
             $pdo = $repository->getPdo();

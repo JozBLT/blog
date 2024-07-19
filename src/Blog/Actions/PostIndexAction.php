@@ -11,20 +11,11 @@ use Psr\Http\Message\ServerRequestInterface;
 class PostIndexAction
 {
 
-    /**
-     * @var RendererInterface
-     */
-    private $renderer;
+    private RendererInterface $renderer;
 
-    /**
-     * @var PostRepository
-     */
-    private $postRepository;
+    private PostRepository $postRepository;
 
-    /**
-     * @var CategoryRepository
-     */
-    private $categoryRepository;
+    private CategoryRepository $categoryRepository;
 
     use RouterAwareAction;
 
@@ -38,7 +29,7 @@ class PostIndexAction
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function __invoke(ServerRequestInterface $request)
+    public function __invoke(ServerRequestInterface $request): string
     {
         $params = $request->getQueryParams();
         $posts = $this->postRepository->findPublic()->paginate(12, $params['p'] ?? 1);
