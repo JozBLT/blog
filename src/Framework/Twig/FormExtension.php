@@ -25,7 +25,7 @@ class FormExtension extends AbstractExtension
     {
         $type = $options['type'] ?? 'text';
         $error = $this->getErrorHtml($context, $key);
-        $class = 'form-group';
+        $class = 'form-group ' . ($options['wrapper_class'] ?? '');
         $value = $this->convertValue($value);
         $attributes = [
             'class' => trim('form-control ' . ($options['class'] ?? '')),
@@ -35,6 +35,10 @@ class FormExtension extends AbstractExtension
 
         if ($error) {
             $attributes['class'] .= ' is-invalid';
+        }
+
+        if (!empty($options['readonly'])) {
+            $attributes['readonly'] = 'readonly';
         }
 
         if ($type === 'textarea') {
@@ -111,7 +115,7 @@ class FormExtension extends AbstractExtension
     /** Generates a <textarea> */
     private function textarea(?string $value, array $attributes): string
     {
-        return "<textarea rows='10' " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
+        return "<textarea rows='8' " . $this->getHtmlFromArray($attributes) . ">$value</textarea>";
     }
 
     /** Generates a <select> */

@@ -16,9 +16,7 @@ class FlashExtension extends AbstractExtension
         $this->flashService = $flashService;
     }
 
-    /**
-     * @return TwigFunction[]
-     */
+    /** @return TwigFunction[] */
     public function getFunctions(): array
     {
         return [

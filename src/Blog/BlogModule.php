@@ -33,6 +33,7 @@ class BlogModule extends Module
         $blogPrefix = $container->get('blog.prefix');
         $container->get(RendererInterface::class)->addPath('blog', __DIR__ . '/views');
         $router = $container->get(Router::class);
+        \assert($router instanceof Router);
         $router->get('/', HomePageAction::class, 'homepage');
         $router->get($blogPrefix, PostIndexAction::class, 'blog.index');
         $router->get("$blogPrefix/{slug:[a-z\-0-9]+}-{id:[0-9]+}", PostShowAction::class, 'blog.show');

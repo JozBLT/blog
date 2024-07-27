@@ -3,6 +3,7 @@
 namespace App\Blog\Actions;
 
 use App\Blog\Repository\PostRepository;
+use App\Comment\Repository\CommentRepository;
 use Exception;
 use Framework\Actions\RouterAwareAction;
 use Framework\Renderer\RendererInterface;
@@ -15,31 +16,37 @@ class PostShowAction
 
     private RendererInterface $renderer;
 
+    private Router $router;
+
     private PostRepository $postRepository;
 
-    private Router $router;
+    private CommentRepository $commentRepository;
 
     use RouterAwareAction;
 
     public function __construct(
         RendererInterface $renderer,
         Router $router,
-        PostRepository $postRepository
+        PostRepository $postRepository,
+        CommentRepository $commentRepository
     ) {
         $this->renderer = $renderer;
         $this->router = $router;
         $this->postRepository = $postRepository;
+        $this->commentRepository = $commentRepository;
     }
 
     /**
-     * Display an article
+     * Display an article and his comments if they're published
      *
      * @throws Exception
      */
     public function __invoke(ServerRequestInterface $request): string|ResponseInterface
     {
         $slug = $request->getAttribute('slug');
-        $post = $this->postRepository->findWithCategory($request->getAttribute('id'));
+        $postId = $request->getAttribute('id');
+        $post = $this->postRepository->findWithCategory($postId);
+        $comments = $this->commentRepository->findPublishedByPost($postId);
 
         if ($post->slug !== $slug) {
             return $this->redirect('blog.show', [
@@ -49,7 +56,8 @@ class PostShowAction
         }
 
         return $this->renderer->render('@blog/show', [
-            'post' => $post
+            'post' => $post,
+            'comments' => $comments
         ]);
     }
 }
