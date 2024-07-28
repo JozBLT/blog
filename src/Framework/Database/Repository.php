@@ -86,6 +86,14 @@ class Repository
         return $query->execute($params);
     }
 
+    public function validate(int $id, string $column): bool
+    {
+        $params["id"] = $id;
+        $query = $this->pdo->prepare("UPDATE $this->repository SET $column = 1 WHERE id = :id");
+
+        return $query->execute($params);
+    }
+
     /** Insert a new record in DB */
     public function insert(array $params): bool
     {

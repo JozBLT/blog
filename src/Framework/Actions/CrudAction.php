@@ -30,7 +30,8 @@ class CrudAction
     /** @var string[] */
     protected array $messages = [
         'create' => "L'élément a bien été créé",
-        'edit'   => "L'élément a bien été modifié"
+        'edit'   => "L'élément a bien été modifié",
+        'validate' => "L'élément a bien été validé"
     ];
 
     protected array $acceptedParams = [];
@@ -61,6 +62,9 @@ class CrudAction
         if (str_ends_with((string)$request->getUri(), 'new')) {
             return $this->create($request);
         }
+        if (str_ends_with((string)$request->getUri(), 'validate')) {
+            return $this->validate($request);
+        }
         if ($request->getAttribute('id')) {
             return $this->edit($request);
         }
@@ -75,6 +79,15 @@ class CrudAction
         $items = $this->repository->findAll()->paginate(12, $params['p'] ?? 1);
 
         return $this->renderer->render($this->viewPath . '/index', compact('items'));
+    }
+
+    /** @throws Exception */
+    public function validate(ServerRequestInterface $request): ResponseInterface
+    {
+        $this->repository->validate($request->getAttribute('id'), 'published');
+        $this->flash->success($this->messages['validate']);
+
+        return $this->redirect($this->routePrefix . '.index');
     }
 
     /** @throws Exception */

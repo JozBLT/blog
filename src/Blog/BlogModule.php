@@ -4,6 +4,7 @@ namespace App\Blog;
 
 use App\Blog\Actions\CategoryCrudAction;
 use App\Blog\Actions\CategoryShowAction;
+use App\Blog\Actions\CommentManageAction;
 use App\Blog\Actions\HomePageAction;
 use App\Blog\Actions\PostCrudAction;
 use App\Blog\Actions\PostIndexAction;
@@ -43,6 +44,12 @@ class BlogModule extends Module
             $prefix = $container->get('admin.prefix');
             $router->crud("$prefix/posts", PostCrudAction::class, 'blog.posts.admin');
             $router->crud("$prefix/categories", CategoryCrudAction::class, 'blog.category.admin');
+            $router->crud("$prefix/comments", CommentManageAction::class, 'blog.comments.admin');
+            $router->post(
+                "$prefix/comments/{id:[0-9]+}/validate",
+                [CommentManageAction::class, 'validate'],
+                'blog.comments.admin.validate'
+            );
         }
     }
 }
