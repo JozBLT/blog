@@ -15,9 +15,7 @@ class PagerFantaExtension extends AbstractExtension
     {
     }
 
-    /**
-     * @return TwigFunction[]
-     */
+    /** @return TwigFunction[] */
     public function getFunctions(): array
     {
         return [

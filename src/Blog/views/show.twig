@@ -4,13 +4,25 @@
 
 {% block body %}
 
-<h1>{{ post.name }}</h1>
+    {% if flash('success') %}
+        <div class="alert alert-success">
+            {{ flash('success') }}
+        </div>
+    {% endif %}
+
+    {% if flash('error') %}
+        <div class="alert alert-danger">
+            {{ flash('error') }}
+        </div>
+    {% endif %}
+
+    <h1>{{ post.name }}</h1>
 
     <p class="text-muted">
         {% if post.categoryId %}
-            <a href="{{ path('blog.category', {slug: post.categorySlug}) }}" title="{{ post.categoryName }}">{{ post.categoryName }}</a>
+            <a href="{{ path('blog.category', {slug: post.categorySlug}) }}"
+               title="{{ post.categoryName }}">{{ post.categoryName }}</a>
         {% endif %}
-        {{ post.createdAt | ago }}
     </p>
     <p>
         {% if post.image %}
@@ -20,5 +32,30 @@
     <p>
         {{ post.content | nl2br }}
     </p>
+    {{ post.createdAt | ago }}
+    <div class="row mt-4">
+        <h2>Commentaires</h2>
+        {% for comment in comments %}
+            <div class="comment">
+                <p><strong>{{ comment.username }}</strong> a écrit :</p>
+                <p>{{ comment.comment }}</p>
+                <p class="text-muted">{{ comment.createdAt | ago }}</p>
+            </div>
+        {% else %}
+            <p>Personne n'a commenté ce post pour le moment.</p>
+        {% endfor %}
+    </div>
+    <div class="row mt-4">
+        {% if current_user() %}
+
+            <form action="" method="post">
+                {{ csrf_input() }}
+                {{ field('username', current_user().username, null, { wrapper_class: 'col-md-4', readonly: true }) }}
+                {{ field('comment', old.comment ?? null, null, { type: 'textarea', wrapper_class: 'col-md-8' }) }}
+                <button class="btn btn-primary mt-2">Commenter</button>
+            </form>
+
+        {% endif %}
+    </div>
 
 {% endblock %}

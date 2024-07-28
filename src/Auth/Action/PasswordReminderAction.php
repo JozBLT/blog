@@ -60,7 +60,7 @@ class PasswordReminderAction
                 return new RedirectResponse($request->getUri()->getPath());
 
             } catch (NoRecordException) {
-                $errors = ['email' => 'Aucun utilisateur ne corrsepond à cet email'];
+                $errors = ['email' => 'Aucun utilisateur ne correspond à cet email'];
             }
         } else {
             $errors = $validator->getErrors();

@@ -15,9 +15,7 @@ class TextExtension extends AbstractExtension
         ];
     }
 
-    /**
-     * Returns an extract of the content
-     */
+    /** Returns an extract of the content */
     public function excerpt(?string $content, int $maxLength = 100): string
     {
         if (is_null($content)) {

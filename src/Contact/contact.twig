@@ -20,9 +20,9 @@
 
     <form action="{{ path('contact') }}" method="post">
         {{ csrf_input() }}
-        {{ field('name', null, 'Votre nom') }}
-        {{ field('email', null, 'Votre email', {type: 'email'}) }}
-        {{ field('content', null, 'Votre message', {type: 'textarea'}) }}
+        {{ field('name', current_user() ? current_user().username : null, 'Votre nom', { wrapper_class: 'col-md-4' }) }}
+        {{ field('email', current_user() ? current_user().email : null, 'Votre email', { type: 'email', wrapper_class: 'col-md-4' }) }}
+        {{ field('content', null, 'Votre message', { type: 'textarea', wrapper_class: 'col-md-10' }) }}
         <button class="btn btn-primary mt-2">Envoyer</button>
     </form>
 

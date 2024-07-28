@@ -5,6 +5,7 @@ use App\Admin\AdminModule;
 use App\Auth\AuthModule;
 use App\Auth\ForbiddenMiddleware;
 use App\Blog\BlogModule;
+use App\Comment\CommentModule;
 use App\Contact\ContactModule;
 use Framework\App;
 use Framework\Auth\RoleMiddlewareFactory;
@@ -18,31 +19,31 @@ use Framework\Middleware\TrailingSlashMiddleware;
 use Franzl\Middleware\Whoops\WhoopsMiddleware;
 use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use function Http\Response\send;
 
-chdir(dirname(__DIR__));
+\chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
+
+\date_default_timezone_set('Europe/Paris');
 
 $app =  (new App('config/config.php'))
     ->addModule(AdminModule::class)
     ->addModule(ContactModule::class)
     ->addModule(BlogModule::class)
     ->addModule(AuthModule::class)
-    ->addModule(AccountModule::class);
+    ->addModule(AccountModule::class)
+    ->addModule(CommentModule::class);
 
 try {
     $container = $app->getContainer();
-} catch (Exception $e) {
-}
-try {
-    /** @var ContainerInterface $container */
+    $adminMiddleware = $container->get(RoleMiddlewareFactory::class);
+    \assert($adminMiddleware instanceof RoleMiddlewareFactory);
     $app->pipe(WhoopsMiddleware::class)
         ->pipe(TrailingSlashMiddleware::class)
         ->pipe(ForbiddenMiddleware::class)
-        ->pipe($container->get('admin.prefix'), $container->get(RoleMiddlewareFactory::class)->makeForRole('admin'))
+        ->pipe($container->get('admin.prefix'), $adminMiddleware->makeForRole('admin'))
         ->pipe(MethodMiddleware::class)
         ->pipe(RendererRequestMiddleware::class)
         ->pipe(CsrfMiddleware::class)
@@ -53,6 +54,9 @@ try {
 }
 
 if (php_sapi_name() !== "cli") {
-    $response = $app->run(ServerRequest::fromGlobals());
-    send($response);
+    try {
+        $response = $app->run(ServerRequest::fromGlobals());
+        send($response);
+    } catch (NotFoundExceptionInterface|ContainerExceptionInterface|Exception $e) {
+    }
 }

@@ -11,9 +11,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 class LoggedInMiddleware implements MiddlewareInterface
 {
 
-    /**
-     * @var Auth
-     */
     private Auth $auth;
 
     public function __construct(Auth $auth)
