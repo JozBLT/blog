@@ -30,7 +30,6 @@ class ValidationError
 
     public function __construct(string $key, string $rule, array $attributes = [])
     {
-
         $this->key = $key;
         $this->rule = $rule;
         $this->attributes = $attributes;

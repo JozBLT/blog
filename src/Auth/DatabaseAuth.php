@@ -2,6 +2,7 @@
 
 namespace App\Auth;
 
+use App\Auth\User as AppUser;
 use Framework\Auth;
 use Framework\Auth\User;
 use Framework\Database\NoRecordException;
@@ -14,10 +15,7 @@ class DatabaseAuth implements Auth
 
     private SessionInterface $session;
 
-    /**
-     * @var \App\Auth\User
-     */
-    private $user;
+    private ?AppUser $user = null;
 
     public function __construct(UserRepository $userRepository, SessionInterface $session)
     {
@@ -32,7 +30,7 @@ class DatabaseAuth implements Auth
         }
 
         try {
-            /** @var \App\Auth\User $user */
+            /** @var AppUser $user */
             $user = $this->userRepository->findBy('username', $username);
         } catch (NoRecordException) {
             return null;
@@ -52,12 +50,9 @@ class DatabaseAuth implements Auth
         $this->session->delete('auth.user');
     }
 
-    /**
-     * @return User|null
-     */
     public function getUser(): ?User
     {
-        if ($this->user) {
+        if ($this->user instanceof AppUser) {
             return $this->user;
         }
         $userId = $this->session->get('auth.user');
@@ -77,7 +72,7 @@ class DatabaseAuth implements Auth
         return null;
     }
 
-    public function setUser(\App\Auth\User $user): void
+    public function setUser(AppUser $user): void
     {
         $this->session->set('auth.user', $user->id);
         $this->user = $user;

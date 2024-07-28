@@ -9,9 +9,7 @@ class DashboardAction
 
     private RendererInterface $renderer;
 
-    /**
-     * @var AdminWidgetInterface[]
-     */
+    /** @var AdminWidgetInterface[] */
     private array $widgets;
 
     public function __construct(RendererInterface $renderer, array $widgets)
