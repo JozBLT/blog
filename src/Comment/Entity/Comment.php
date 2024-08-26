@@ -20,6 +20,8 @@ class Comment
 
     public bool $published;
 
+    public ?string $postName = null;
+
     public function getId(): int
     {
         return $this->id;
