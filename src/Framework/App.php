@@ -108,7 +108,6 @@ class App implements RequestHandlerInterface
             }
 
             foreach ($this->modules as $module) {
-
                 if ($module::DEFINITIONS) {
                     $builder->addDefinitions($module::DEFINITIONS);
                 }

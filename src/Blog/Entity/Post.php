@@ -20,7 +20,15 @@ class Post
 
     public DateTime $updatedAt;
 
+    public ?int $categoryId = null;
+
     public ?string $image = null;
+
+    public ?string $published = null;
+
+    public ?string $categoryName = null;
+
+    public ?string $categorySlug = null;
 
     /** @throws Exception */
     public function setCreatedAt(DateTime|string $datetime): void

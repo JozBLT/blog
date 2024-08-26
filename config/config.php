@@ -19,7 +19,10 @@ use Framework\Twig\TimeExtension;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Mailer\Mailer;
 
-use function DI\{get, autowire, factory, env};
+use function DI\get;
+use function DI\autowire;
+use function DI\factory;
+use function DI\env;
 
 return [
     'env' => env('ENV', 'production'),

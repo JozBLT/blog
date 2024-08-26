@@ -18,6 +18,8 @@ class Comment
 
     public DateTime $createdAt;
 
+    public bool $published;
+
     public function getId(): int
     {
         return $this->id;
