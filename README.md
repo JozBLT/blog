@@ -99,7 +99,7 @@ Sur la page présentant le détail d’un blog post, il faut afficher les inform
 composer install
 ```
 
-*   Lancer les migrations et le seeding des tables
+*   Créer une bdd 'blog' et lancer les migrations et le seeding des tables
 ```bash
 .\vendor\bin\phinx migrate
 ```
@@ -107,9 +107,14 @@ composer install
 .\vendor\bin\phinx seed:run
 ```
 
-*   Lancer le serveur
+*   Lancer le serveur sur un environnement de développement
 ```bash
 $env:ENV="dev"; php -S localhost:8000 -d display_errors=1 -t public/
+```
+
+*   Ou sur un environnement de production (mise en place du cache)
+```bash
+php -S localhost:8000 -d display_errors=1 -t public/
 ```
 
 *   Un compte Admin est créé automatiquement et vous avez la possibilité de créer un compte utilisateur simple
