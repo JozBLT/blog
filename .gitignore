@@ -1,7 +1,11 @@
 .idea
+.env
 vendor
 composer.lock
 .phpunit.result.cache
 /tmp
 src/Framework/tmp
 /public/uploads
+phinx.php
+phpcs.xml
+phpunit.xml

@@ -50,15 +50,15 @@ class ContactAction
         if ($validator->isValid()) {
             $this->flashService->success('Merci pour votre email');
             $email = (new Email())
-                ->from($params['email'])
+                ->from($this->to)
                 ->to($this->to)
+                ->replyTo($params['email'])
                 ->subject('Formulaire de contact')
                 ->text($this->renderer->render('@contact/email/contact.text', $params))
                 ->html($this->renderer->render('@contact/email/contact.html', $params));
             $this->mailer->send($email);
 
             return new RedirectResponse((string)$request->getUri());
-
         } else {
             $this->flashService->error('Merci de corriger vos erreur');
             $errors = $validator->getErrors();
