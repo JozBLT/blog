@@ -1,7 +1,6 @@
 <?php
 
 use Framework\MailerFactory;
-
 use Framework\Middleware\CsrfMiddleware;
 use Framework\Renderer\RendererInterface;
 use Framework\Renderer\TwigRendererFactory;
@@ -22,14 +21,13 @@ use Symfony\Component\Mailer\Mailer;
 use function DI\get;
 use function DI\autowire;
 use function DI\factory;
-use function DI\env;
 
 return [
-    'env' => env('ENV', 'production'),
-    'database.host' => 'localhost',
-    'database.username' => 'root',
-    'database.password' => '',
-    'database.name' => 'blog',
+    'env' => $_ENV['ENV'],
+    'database.host' => $_ENV['DATABASE_HOST'],
+    'database.username' => $_ENV['DATABASE_USERNAME'],
+    'database.password' => $_ENV['DATABASE_PASSWORD'],
+    'database.name' => $_ENV['DATABASE_NAME'],
     'views.path' => dirname(__DIR__) . '/views',
     'twig.extensions' => [
       get(RouterTwigExtension::class),
@@ -59,7 +57,7 @@ return [
         );
     },
     //Mailer
-    'mail.to' => 'admin@admin.fr', // créer une boite mail pour la réception
+    'mail.to' => $_ENV['SMTP_USER'],
     'mail.from' => 'no-reply@blogAdmin.fr',
     Mailer::class => factory(MailerFactory::class)
 ];

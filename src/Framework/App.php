@@ -96,7 +96,7 @@ class App implements RequestHandlerInterface
     {
         if ($this->container === null) {
             $builder = new ContainerBuilder();
-            $env = getenv('ENV') ?: 'production';
+            $env = $_ENV['ENV'] ?? 'production';
 
             if ($env === 'production') {
                 $builder->enableCompilation(__DIR__ . '/tmp');

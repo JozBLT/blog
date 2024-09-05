@@ -7,6 +7,7 @@ use App\Auth\ForbiddenMiddleware;
 use App\Blog\BlogModule;
 use App\Comment\CommentModule;
 use App\Contact\ContactModule;
+use Dotenv\Dotenv;
 use Framework\App;
 use Framework\Auth\RoleMiddlewareFactory;
 use Framework\Middleware\CsrfMiddleware;
@@ -25,6 +26,9 @@ use function Http\Response\send;
 \chdir(dirname(__DIR__));
 
 require 'vendor/autoload.php';
+
+$dotenv = Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
 
 \date_default_timezone_set('Europe/Paris');
 
@@ -51,6 +55,8 @@ try {
         ->pipe(DispatcherMiddleware::class)
         ->pipe(NotFoundMiddleware::class);
 } catch (NotFoundExceptionInterface|ContainerExceptionInterface|Exception $e) {
+    echo 'Erreur : ' . $e->getMessage();
+    echo '<pre>' . $e->getTraceAsString() . '</pre>';
 }
 
 if (php_sapi_name() !== "cli") {
@@ -58,5 +64,7 @@ if (php_sapi_name() !== "cli") {
         $response = $app->run(ServerRequest::fromGlobals());
         send($response);
     } catch (NotFoundExceptionInterface|ContainerExceptionInterface|Exception $e) {
+        echo 'Erreur : ' . $e->getMessage();
+        echo '<pre>' . $e->getTraceAsString() . '</pre>';
     }
 }
