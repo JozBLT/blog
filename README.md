@@ -118,6 +118,8 @@ $env:ENV="dev"; php -S localhost:8000 -d display_errors=1 -t public/
 php -S localhost:8000 -d display_errors=1 -t public/
 ```
 
+*   Pensez à créer un fichier .env sur la base du .env.example fournis, en renseignant les informations de connexion BDD
+
 *   Un compte Admin est créé automatiquement et vous avez la possibilité de créer un compte utilisateur simple
     - username : admin
     - password : admin
