@@ -1,0 +1,15 @@
+title Connected User / Comment
+actor USER
+participant APP
+database Database
+
+activate APP
+
+USER->APP: comment(comment)
+APP->Database: saveComment(psot_id, username, comment, created_at)
+activate Database
+APP<--Database: true
+deactivate Database
+USER<--APP: postCommentedConfirmation
+
+deactivate APP

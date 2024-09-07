@@ -1,0 +1,60 @@
+title Basic Visitor
+
+actor VISITOR
+participant APP
+database Database
+entity MailBox
+
+activate APP
+
+VISITOR->APP: accessBlog()
+APP->Database: getAllPostsAndCategories(published = 1)
+activate Database
+APP<--Database: Posts(id, name, slug, content, created_at, category_id)
+APP<--Database: Categories(id, name, slug)
+deactivate Database
+VISITOR<--APP: postsAndCategoriesView
+alt byCategory
+VISITOR->APP: showCategory(category_name)
+APP->Database: getPostsByCategory(category_id, published = 1)
+activate Database
+APP<--Database: PostsByCategory(post_id, name, slug, content, created_at)
+deactivate Database
+VISITOR<--APP: postsByCategoryView
+end
+VISITOR->APP: showPost(pot_name)
+APP->Database: getPost(post_id)
+activate Database
+APP->Database: getComments(post_id)
+APP<--Database: Post(name, slug, content, category_name created_at)
+APP<--Database: Comments(username, comment, created_at)
+deactivate Database
+VISITOR<--APP: postView
+opt contact
+VISITOR->APP: contact(name, email, message)
+APP->MailBox: sendMail(name, email, message)
+activate MailBox
+APP<--MailBox: true
+deactivate MailBox
+VISITOR<--APP: mailSentConfirmation
+end
+opt register
+VISITOR->APP: register(username, email, password)
+APP->Database: createUser(username, email, password)
+activate Database
+APP<--Database: User(username, role)
+deactivate Database
+VISITOR<--APP: connectedView
+note over VISITOR,APP: comment()
+end
+opt login
+VISITOR->APP: login(username, password)
+APP->Database: getUser(username, password)
+activate Database
+APP<--Database: User(username, role)
+deactivate Database
+VISITOR<--APP: connectedView
+note over VISITOR,APP: comment()
+end
+
+deactivate APP
