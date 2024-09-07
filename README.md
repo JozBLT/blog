@@ -94,6 +94,7 @@ Sur la page présentant le détail d’un blog post, il faut afficher les inform
       - "symfony/mailer": "^7.1",
       - "symfony/twig-bridge": "^7.1",
       - "ramsey/uuid": "^4.7"
+      - "vlucas/phpdotenv": "^5.6"
 
 ```bash
 composer install
