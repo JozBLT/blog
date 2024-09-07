@@ -20,9 +20,24 @@
 
     <form action="{{ path('contact') }}" method="post">
         {{ csrf_input() }}
-        {{ field('name', current_user() ? current_user().username : null, 'Votre nom', { wrapper_class: 'col-md-4' }) }}
-        {{ field('email', current_user() ? current_user().email : null, 'Votre email', { type: 'email', wrapper_class: 'col-md-4' }) }}
-        {{ field('content', null, 'Votre message', { type: 'textarea', wrapper_class: 'col-md-10' }) }}
+
+        {{ field('name', old['name'] ?? (current_user() ? current_user().username : null), 'Votre nom', {
+            wrapper_class: 'col-md-4',
+            error: errors['name'] ?? null
+        }) }}
+
+        {{ field('email', old['email'] ?? (current_user() ? current_user().email : null), 'Votre email', {
+            type: 'email',
+            wrapper_class: 'col-md-4',
+            error: errors['email'] ?? null
+        }) }}
+
+        {{ field('content', old['content'] ?? '', 'Votre message', {
+            type: 'textarea',
+            wrapper_class: 'col-md-10',
+            error: errors['content'] ?? null
+        }) }}
+
         <button class="btn btn-primary mt-2">Envoyer</button>
     </form>
 
