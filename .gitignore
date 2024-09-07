@@ -1,5 +1,4 @@
 .idea
-/UML
 .env
 vendor
 composer.lock

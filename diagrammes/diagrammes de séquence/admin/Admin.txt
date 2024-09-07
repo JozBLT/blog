@@ -1,0 +1,79 @@
+title ADMIN
+actor ADMIN
+participant APP
+database Database
+
+activate APP
+
+alt posts
+ADMIN->APP: managePosts()
+APP->Database: getAllPosts()
+activate Database
+APP<--Database: Posts(id, name, slug, content, created_at, category_id, published)
+APP<--Database: Categories(id, name)
+deactivate Database
+ADMIN<--APP: postsView
+opt create
+ADMIN->APP: createPost(name, slug, content, category_name, published, created_at)
+APP->Database: createPost(name, slug, content, category_id, published, created_at)
+activate Database
+APP<--Database: true
+deactivate Database
+ADMIN<--APP: postsView
+end
+opt update
+ADMIN->APP: getPost(id)
+ADMIN<--APP: Post(id, name, slug, content, created_at, category_name, published)
+ADMIN->APP: updatePost(id, name, slug, content, created_at, category_name, published)
+APP->Database: updatePost(id, name, slug, content, created_at, category_name, published)
+activate Database
+APP<--Database: true
+deactivate Database
+ADMIN<--APP: postsView
+end
+opt delete
+ADMIN->APP: deletePost(id)
+APP->Database: deletePost(id)
+activate Database
+APP<--Database: true
+deactivate Database
+ADMIN<--APP: postsView
+end
+end
+
+alt categories
+ADMIN->APP: manageCategories()
+APP->Database: getAllCategories()
+activate Database
+APP<--Database: Categories(id, name, slug)
+deactivate Database
+ADMIN<--APP: categoriesView
+note over ADMIN,Database: CRUD see posts
+end
+
+alt comments
+ADMIN->APP: manageComments()
+APP->Database: getAllComments()
+activate Database
+APP<--Database: Comments(id, post_id, username, comment, created_at, published)
+deactivate Database
+ADMIN<--APP: CommentsView
+opt validate
+ADMIN->APP: validateComment(id)
+APP->Database: validateComment(id, published)
+activate Database
+APP<--Database: true
+deactivate Database
+ADMIN<--APP: commentsView
+end
+opt delete
+ADMIN->APP: deleteComment(id)
+APP->Database: deleteComment(id)
+activate Database
+APP<--Database: true
+deactivate Database
+ADMIN<--APP: commentsView
+end
+end
+
+deactivate APP
