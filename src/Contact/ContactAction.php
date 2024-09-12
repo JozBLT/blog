@@ -42,6 +42,8 @@ class ContactAction
     /** @throws TransportExceptionInterface */
     public function __invoke(ServerRequestInterface $request): string|RedirectResponse
     {
+        $referer = $request->getServerParams()['HTTP_REFERER'] ?? '/';
+
         if ($request->getMethod() === 'GET') {
             $errors = $this->session->get('errors', []);
             $old = $this->session->get('old', []);
@@ -74,6 +76,6 @@ class ContactAction
             $this->flashService->error('Merci de corriger vos erreur');
         }
 
-        return new RedirectResponse('/contact');
+        return new RedirectResponse($referer);
     }
 }

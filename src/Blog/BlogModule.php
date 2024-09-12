@@ -36,6 +36,7 @@ class BlogModule extends Module
         $router = $container->get(Router::class);
         \assert($router instanceof Router);
         $router->get('/', HomePageAction::class, 'homepage');
+        $router->post('/', HomePageAction::class, 'homepage.contact');
         $router->get($blogPrefix, PostIndexAction::class, 'blog.index');
         $router->get("$blogPrefix/{slug:[a-z\-0-9]+}-{id:[0-9]+}", PostShowAction::class, 'blog.show');
         $router->get("$blogPrefix/category/{slug:[a-z\-0-9]+}", CategoryShowAction::class, 'blog.category');

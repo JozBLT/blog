@@ -63,6 +63,31 @@
         <p class="d-inline fs-4 mx-2 text-decoration-underline">PHP</p>
         <p class="d-inline fs-4 mx-2 text-decoration-underline">Sql</p>
     </div>
+    <div class="d-block rounded p-4 pt-4 mt-4 text-center text-secondary bg-light-subtle">
+        <h1>Contact</h1>
+    </div>
+    <form action="{{ path('homepage.contact') }}" method="post">
+        {{ csrf_input() }}
+
+        {{ field('name', old['name'] ?? (current_user() ? current_user().username : null), 'Votre nom', {
+            wrapper_class: 'col-md-4',
+            error: errors['name'] ?? null
+        }) }}
+
+        {{ field('email', old['email'] ?? (current_user() ? current_user().email : null), 'Votre email', {
+            type: 'email',
+            wrapper_class: 'col-md-4',
+            error: errors['email'] ?? null
+        }) }}
+
+        {{ field('content', old['content'] ?? '', 'Votre message', {
+            type: 'textarea',
+            wrapper_class: 'col-md-10',
+            error: errors['content'] ?? null
+        }) }}
+
+        <button class="btn btn-primary mt-2">Envoyer</button>
+    </form>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
